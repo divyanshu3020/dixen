@@ -309,8 +309,8 @@ export default function Projects() {
             {projects.map((project, i) => (
               <div
                 key={i}
-                className="relative flex-shrink-0 cursor-none"
-                style={{ width: "75vw", maxWidth: "960px", height: "72vh" }}
+                className="relative shrink-0 cursor-none"
+                style={{ width: "75vw", maxWidth: "960px", height: "72vh", maxHeight:"72vh" }}
                 onMouseEnter={() => showCursor(project.color)}
                 onMouseLeave={hideCursor}
                 onClick={() => window.open(project.link, "_blank")}

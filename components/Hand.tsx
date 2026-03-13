@@ -410,14 +410,14 @@ export default function Hand() {
           </div>
 
           {/* RIGHT HAND */}
-          <div ref={rightHandRef} className="relative shrink-0 self-end top-70">
+          <div ref={rightHandRef} className="relative shrink-0 self-end top-70 ">
             <Image
               src="/images/right-hand.png"
               alt="Developer hand"
               height={554}
               width={664}
               priority
-              className="block"
+              className=" block "
               style={{
                 filter: "drop-shadow(-20px 0px 40px rgba(0,0,0,0.95))",
                 maxWidth: "44vw",
