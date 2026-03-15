@@ -10,20 +10,62 @@ gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
   {
+    role: "Full Stack Developer Intern",
+    company: "Cladbe / Property.new",
+    period: "Jan 2026 – Mar 2026",
+    location: "On-site",
+    description:
+      "Built production-ready frontend pages from Figma designs using Next.js, React, Tailwind CSS, and Framer Motion. Integrated Google Maps API for property visualization, implemented CMS-driven content using Payload Headless CMS, and worked with modern DevOps workflows including Docker, CI/CD pipelines, Cloudflare CDN, and media optimization.",
+    tags: [
+      "Next.js",
+      "React",
+      "Tailwind CSS",
+      "Framer Motion",
+      "Node.js",
+      "Express",
+      "Payload CMS",
+      "Google Maps API",
+      "Docker",
+      "CI/CD",
+    ],
+    color: "#0f766e",
+  },
+  {
+    role: "Shopify Developer Intern",
+    company: "Ellemora",
+    period: "Dec 2025 – Jan 2026",
+    location: "On-site",
+    description:
+      "Developed and customized Shopify storefront components, improving UI responsiveness and user experience. Worked with theme customization, Liquid templates, and modern frontend practices to implement design updates and optimize storefront performance.",
+    tags: ["Shopify", "Liquid", "Shopify CMS", "JavaScript", "HTML", "CSS"],
+    color: "#7c3aed",
+  },
+  {
     role: "Full Stack Developer",
     company: "EVO-A Pvt. limited",
     period: "Jun 2025 – Nov 2025",
-    location: "Bareilly, India",
+    location: "Hybrid",
     description:
       "Built scalable, real-time chat architecture supporting multi-role AI interactions and streaming responses. Improved response quality by 80% through dynamic system prompt management and Gemini API integration.",
-    tags: ["Next.js", "TypeScript", "React.js", "Gemini API", "Node.js"],
+    tags: [
+      "Next.js",
+      "TypeScript",
+      "React.js",
+      "Tailwind",
+      "Framer-motion",
+      "Supabase Auth",
+      "Supabase Database",
+      "Gemini API",
+      "Node.js",
+      "ShadCN",
+    ],
     color: "#0d4d6e",
   },
   {
     role: "UI/UX Designer",
     company: "EVO-A Pvt. limited",
     period: "Apr 2025 – Jun 2025",
-    location: "Bareilly, India",
+    location: "On-site",
     description:
       "Designed and documented a reusable Figma design system to improve scalability and consistency. Created role-based user flows and high-fidelity prototypes, enhancing onboarding and user interaction efficiency.",
     tags: [
@@ -35,36 +77,36 @@ const experiences = [
     ],
     color: "#1F2684",
   },
-  {
-    role: "Frontend Developer Intern",
-    company: "TechCorp",
-    period: "Jan 2024 – Present",
-    location: "Remote",
-    description:
-      "Built and shipped production-grade React + Next.js features. Owned the redesign of the dashboard UI, cutting load time by 40% and improving design consistency across 12+ components.",
-    tags: ["React", "Next.js", "TypeScript", "Tailwind"],
-    color: "#1a7a3a",
-  },
-  {
-    role: "UI/UX Designer & Developer",
-    company: "Freelance",
-    period: "Jun 2023 – Dec 2023",
-    location: "Remote",
-    description:
-      "Designed and developed 5+ client websites end-to-end — from Figma wireframes to deployed Next.js apps. Focused heavily on micro-interactions, animation, and pixel-perfect execution.",
-    tags: ["Figma", "Framer", "Next.js", "GSAP"],
-    color: "#0d4d6e",
-  },
-  {
-    role: "Open Source Contributor",
-    company: "GitHub",
-    period: "2023 – Present",
-    location: "Remote",
-    description:
-      "Contributed UI fixes and feature additions to open source projects. Improved accessibility, refactored CSS architecture, and added dark mode support across multiple repos.",
-    tags: ["React", "CSS", "Git", "GitHub"],
-    color: "#4a1a7a",
-  },
+  // {
+  //   role: "Frontend Developer Intern",
+  //   company: "TechCorp",
+  //   period: "Jan 2024 – Present",
+  //   location: "Remote",
+  //   description:
+  //     "Built and shipped production-grade React + Next.js features. Owned the redesign of the dashboard UI, cutting load time by 40% and improving design consistency across 12+ components.",
+  //   tags: ["React", "Next.js", "TypeScript", "Tailwind"],
+  //   color: "#1a7a3a",
+  // },
+  // {
+  //   role: "UI/UX Designer & Developer",
+  //   company: "Freelance",
+  //   period: "Jun 2023 – Dec 2023",
+  //   location: "Remote",
+  //   description:
+  //     "Designed and developed 5+ client websites end-to-end — from Figma wireframes to deployed Next.js apps. Focused heavily on micro-interactions, animation, and pixel-perfect execution.",
+  //   tags: ["Figma", "Framer", "Next.js", "GSAP"],
+  //   color: "#0d4d6e",
+  // },
+  // {
+  //   role: "Open Source Contributor",
+  //   company: "GitHub",
+  //   period: "2023 – Present",
+  //   location: "Remote",
+  //   description:
+  //     "Contributed UI fixes and feature additions to open source projects. Improved accessibility, refactored CSS architecture, and added dark mode support across multiple repos.",
+  //   tags: ["React", "CSS", "Git", "GitHub"],
+  //   color: "#4a1a7a",
+  // },
 ];
 
 export default function Experience() {
@@ -198,15 +240,21 @@ export default function Experience() {
 
       {/* Floating decorative year markers on the sides */}
       <div className="absolute left-6 top-1/4 pointer-events-none hidden lg:flex flex-col gap-2 items-center">
-        <div className="w-px h-16 bg-gradient-to-b from-transparent to-white/10" />
+        <div className="w-px h-16 bg-linear-to-b from-transparent to-white/10" />
         <span className="text-white/10 text-xs tracking-[0.3em] uppercase rotate-90 mt-2">
-          2024
+          2026
         </span>
       </div>
       <div className="absolute right-6 top-2/4 pointer-events-none hidden lg:flex flex-col gap-2 items-center">
-        <div className="w-px h-16 bg-gradient-to-b from-transparent to-white/10" />
+        <div className="w-px h-16 bg-linear-to-b from-transparent to-white/10" />
         <span className="text-white/10 text-xs tracking-[0.3em] uppercase rotate-90 mt-2">
-          2023
+          2025
+        </span>
+      </div>
+      <div className="absolute left-6 top-3/4 pointer-events-none hidden lg:flex flex-col gap-2 items-center">
+        <div className="w-px h-16 bg-linear-to-b from-transparent to-white/10" />
+        <span className="text-white/10 text-xs tracking-[0.3em] uppercase rotate-90 mt-2">
+          2025
         </span>
       </div>
 
