@@ -342,12 +342,12 @@ export default function Hand() {
           className="relative w-full flex items-center justify-between shrink-0 pointer-events-none select-none"
           style={{ height: "clamp(280px, 45vh, 520px)" }}>
           {/* LEFT HAND */}
-          <div ref={leftHandRef} className="relative shrink-0 self-end top-60">
+          <div ref={leftHandRef} className="relative shrink-0">
             <Image
               src="/images/left.png"
               alt="Designer hand"
-              height={554}
-              width={664}
+              height={123}
+              width={287}
               priority
               className="block"
               style={{
@@ -410,12 +410,12 @@ export default function Hand() {
           </div>
 
           {/* RIGHT HAND */}
-          <div ref={rightHandRef} className="relative shrink-0 self-end top-70 ">
+          <div ref={rightHandRef} className="relative shrink-0">
             <Image
               src="/images/right.png"
               alt="Developer hand"
-              height={554}
-              width={664}
+              height={102}
+              width={289}
               priority
               className=" block "
               style={{
