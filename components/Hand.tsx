@@ -344,7 +344,7 @@ export default function Hand() {
           {/* LEFT HAND */}
           <div ref={leftHandRef} className="relative shrink-0 self-end top-60">
             <Image
-              src="/images/half-hand.png"
+              src="/images/left.png"
               alt="Designer hand"
               height={554}
               width={664}
@@ -412,7 +412,7 @@ export default function Hand() {
           {/* RIGHT HAND */}
           <div ref={rightHandRef} className="relative shrink-0 self-end top-70 ">
             <Image
-              src="/images/right-hand.png"
+              src="/images/right.png"
               alt="Developer hand"
               height={554}
               width={664}
