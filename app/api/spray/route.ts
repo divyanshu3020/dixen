@@ -6,20 +6,18 @@ export async function GET() {
   try {
     const { data, error } = await supabase
       .from("spray_walls")
-      .select("canvas_data")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+      .select("id, canvas_data, created_at")
+      .order("created_at", { ascending: false });
 
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching spray wall:", error);
+    if (error) {
+      console.error("Error fetching spray walls:", error);
       return NextResponse.json(
-        { error: "Failed to fetch spray wall" },
+        { error: "Failed to fetch spray walls" },
         { status: 500 },
       );
     }
 
-    return NextResponse.json({ canvas_data: data?.canvas_data || null });
+    return NextResponse.json({ data: data || [] });
   } catch (err) {
     console.error("Unexpected error:", err);
     return NextResponse.json(

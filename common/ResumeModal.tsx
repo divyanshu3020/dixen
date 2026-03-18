@@ -15,14 +15,19 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   // Mount/unmount animation
   useEffect(() => {
+    if (isOpen) {
+      // Prevent body scroll
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restore body scroll
+      document.body.style.overflow = "";
+    }
+
     const backdrop = backdropRef.current;
     const panel = panelRef.current;
     if (!backdrop || !panel) return;
 
     if (isOpen) {
-      // Prevent body scroll
-      document.body.style.overflow = "hidden";
-
       gsap.fromTo(
         backdrop,
         { opacity: 0 },
@@ -40,8 +45,6 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           ease: "power3.out",
         }
       );
-    } else {
-      document.body.style.overflow = "";
     }
   }, [isOpen]);
 

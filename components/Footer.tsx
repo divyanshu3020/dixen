@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,8 +65,8 @@ const platforms = [
   },
   {
     name: "Discord",
-    handle: "sinner02762",
-    url: "https://discord.com/channels/sinner02762",
+    handle: "divyanshu3811",
+    url: "https://discord.com/channels/divyanshu3811",
     color: "#5865f2",
     bg: "#0a0b1a",
     desc: "come say hi",
@@ -297,6 +298,7 @@ export default function Footer() {
   const activeColorRef = useRef(SPRAY_COLORS[0]);
   const brushSizeRef = useRef(18);
   const wallLoadedRef = useRef(false);
+  const showingWarningRef = useRef(false);
   const [activeColor, setActiveColor] = useState(SPRAY_COLORS[0]);
   const [brushSize, setBrushSize] = useState(18);
   const [hasTagged, setHasTagged] = useState(false);
@@ -444,33 +446,7 @@ export default function Footer() {
     fetchVibes();
   }, []);
 
-  // ── fetch spray wall on mount ──────────────────────────
-  useEffect(() => {
-    const fetchSprayWall = async () => {
-      try {
-        const res = await fetch("/api/spray");
-        if (!res.ok) return;
-        const data = (await res.json()) as { canvas_data: string | null };
-        if (data.canvas_data && canvasRef.current) {
-          const canvas = canvasRef.current;
-          const ctx2d = canvas.getContext("2d");
-          if (ctx2d) {
-            const img = new Image();
-            img.onload = () => {
-              ctx2d.drawImage(img, 0, 0, canvas.width, canvas.height);
-              setHasTagged(true);
-            };
-            img.src = data.canvas_data;
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching spray wall:", err);
-      }
-    };
-    // Small delay to ensure canvas is mounted
-    const timer = setTimeout(fetchSprayWall, 100);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   // ── spray canvas ─────────────────────────────────────────
   useEffect(() => {
@@ -488,20 +464,7 @@ export default function Footer() {
     };
     resize();
 
-    if (!wallLoadedRef.current) {
-      wallLoadedRef.current = true;
-      try {
-        const saved = localStorage.getItem("dixen_spray_wall");
-        if (saved) {
-          const img = new Image();
-          img.onload = () => {
-            ctx2d.drawImage(img, 0, 0, canvas.width, canvas.height);
-            setHasTagged(true);
-          };
-          img.src = saved;
-        }
-      } catch (_) {}
-    }
+
 
     const spray = (x: number, y: number) => {
       const color = activeColorRef.current;
@@ -525,35 +488,7 @@ export default function Footer() {
       ctx2d.globalAlpha = 1;
     };
 
-    const saveWall = async () => {
-      try {
-        const off = document.createElement("canvas");
-        const sc = Math.min(1, 600 / canvas.width);
-        off.width = Math.round(canvas.width * sc);
-        off.height = Math.round(canvas.height * sc);
-        off.getContext("2d")!.drawImage(canvas, 0, 0, off.width, off.height);
-        const canvasData = off.toDataURL("image/webp", 0.55);
 
-        // Save to localStorage
-        localStorage.setItem("dixen_spray_wall", canvasData);
-        setSavedToast(true);
-        setTimeout(() => setSavedToast(false), 2200);
-
-        // Save to Supabase with debounce
-        if (sprayDebounceRef.current) clearTimeout(sprayDebounceRef.current);
-        sprayDebounceRef.current = setTimeout(async () => {
-          try {
-            await fetch("/api/spray", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ canvas_data: canvasData }),
-            });
-          } catch (err) {
-            console.error("Error saving spray wall to database:", err);
-          }
-        }, 1500);
-      } catch (_) {}
-    };
 
     const pos = (e: MouseEvent | TouchEvent) => {
       const r = canvas.getBoundingClientRect();
@@ -569,6 +504,10 @@ export default function Footer() {
     };
 
     const onDown = (e: MouseEvent | TouchEvent) => {
+      if (showingWarningRef.current) {
+        clearCanvas();
+        showingWarningRef.current = false;
+      }
       isDrawingRef.current = true;
       setIsDrawing(true);
       const p = pos(e);
@@ -581,7 +520,6 @@ export default function Footer() {
       setHasTagged(true);
     };
     const onUp = () => {
-      if (isDrawingRef.current) saveWall();
       isDrawingRef.current = false;
       setIsDrawing(false);
     };
@@ -611,9 +549,47 @@ export default function Footer() {
     if (!c) return;
     c.getContext("2d")?.clearRect(0, 0, c.width, c.height);
     setHasTagged(false);
+  };
+
+  const saveSnapshot = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    if (!hasTagged) {
+      const ctx2d = canvas.getContext("2d");
+      if (ctx2d) {
+        ctx2d.font = "italic 24px 'Comforter', sans-serif";
+        ctx2d.fillStyle = activeColorRef.current;
+        ctx2d.textAlign = "center";
+        
+        ctx2d.globalAlpha = 1;
+        ctx2d.fillText("first spray something then save", canvas.width / 2, canvas.height / 2);
+        showingWarningRef.current = true;
+      }
+      return;
+    }
+
     try {
-      localStorage.removeItem("dixen_spray_wall");
-    } catch (_) {}
+      const off = document.createElement("canvas");
+      const sc = Math.min(1, 600 / canvas.width);
+      off.width = Math.round(canvas.width * sc);
+      off.height = Math.round(canvas.height * sc);
+      off.getContext("2d")!.drawImage(canvas, 0, 0, off.width, off.height);
+      const canvasData = off.toDataURL("image/webp", 0.55);
+
+      setSavedToast(true);
+      setTimeout(() => setSavedToast(false), 2200);
+
+      await fetch("/api/spray", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ canvas_data: canvasData }),
+      });
+      
+      clearCanvas();
+    } catch (err) {
+      console.error("Error saving spray wall to database:", err);
+    }
   };
 
   // ── interactions ─────────────────────────────────────────
@@ -972,8 +948,11 @@ export default function Footer() {
                 The wall is yours.
               </h3>
               <p className="text-white/30 text-xs mt-2 max-w-sm leading-relaxed">
-                Pick a color, pick a size, drag to spray. Saves to this device.
-                🎨
+                Pick a color, pick a size, drag to spray. Saves as a memory.
+                <br />
+                <Link href="/spraywall" className="text-[#ff9900]/80 hover:text-[#ff9900] underline underline-offset-4 decoration-[#ff9900]/30 transition-colors mt-1 inline-block">
+                  View the Spray Wall Gallery &rarr;
+                </Link>
               </p>
             </div>
             <div className="flex items-center gap-3 flex-wrap">
@@ -1016,18 +995,7 @@ export default function Footer() {
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                {savedToast && (
-                  <span
-                    className="text-[10px] tracking-widest uppercase px-3 py-2 rounded-xl"
-                    style={{
-                      color: "#00ff87",
-                      background: "rgba(0,255,135,0.07)",
-                      border: "1px solid rgba(0,255,135,0.15)",
-                      animation: "fadeInUp 0.3s ease",
-                    }}>
-                    ✓ saved
-                  </span>
-                )}
+
                 {hasTagged && (
                   <button
                     onClick={clearCanvas}
@@ -1109,10 +1077,36 @@ export default function Footer() {
                 </p>
               </div>
             )}
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 w-full h-full"
-            />
+              <canvas
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+
+          <div className="flex items-center justify-center gap-4 mt-6 mb-4">
+             <button
+               onClick={saveSnapshot}
+               className="px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+               style={{
+                 color: "#000",
+                 background: "linear-gradient(135deg, #ff3c00, #ff9900)",
+                 boxShadow: "0 0 25px rgba(255,100,0,0.25)",
+                 border: "none",
+               }}>
+               <span>📸</span> Capture & Send to Gallery
+             </button>
+             {savedToast && (
+               <span
+                 className="text-[10px] tracking-widest uppercase px-3 py-2 rounded-xl"
+                 style={{
+                   color: "#00ff87",
+                   background: "rgba(0,255,135,0.07)",
+                   border: "1px solid rgba(0,255,135,0.15)",
+                   animation: "fadeInUp 0.3s ease",
+                 }}>
+                 ✓ saved
+               </span>
+             )}
           </div>
         </div>
 

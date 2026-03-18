@@ -3,6 +3,7 @@
 import { forwardRef, useState } from "react";
 import ResumeModal from "@/common/ResumeModal";
 import Image from "next/image";
+import Link from "next/link";
 import { LetsIconsView } from "@/common/Iconset";
 
 export interface NavbarSlotRefs {
@@ -35,7 +36,7 @@ const Navbar = forwardRef<HTMLElement, NavbarSlotRefs>(
               "0 4px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
           }}
         >
-          <div className="flex justify-between items-center h-full px-4">
+          <div className="relative flex justify-between items-center h-full px-4">
 
             {/* LEFT: Logo + animated name slot */}
             <div className="flex items-center gap-2">
@@ -65,6 +66,18 @@ const Navbar = forwardRef<HTMLElement, NavbarSlotRefs>(
                   Divyanshu Singh
                 </span>
               </div>
+            </div>
+
+            {/* CENTER: Spray Gallery Link */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden sm:flex">
+              <Link
+                href="/spraywall"
+                className="group flex items-center gap-2 px-4 py-1.5 rounded-full transition-all duration-300 hover:bg-white/5 border border-transparent hover:border-white/10"
+              >
+                <span className="text-white/40 group-hover:text-[#ff9900] transition-colors text-xs font-semibold tracking-widest">
+                  /sprayGallery
+                </span>
+              </Link>
             </div>
 
             {/* RIGHT: Animated avatar + Resume */}
