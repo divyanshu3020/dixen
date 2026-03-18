@@ -339,6 +339,8 @@ export default function Projects() {
 
           {/* Scroll hint */}
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 text-white/20 text-[10px] tracking-[0.3em] uppercase select-none">
+            
+            scroll down to explore
             <svg
               width="14"
               height="14"
@@ -348,7 +350,6 @@ export default function Projects() {
               strokeWidth="1.5">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            scroll to explore
           </div>
 
           {/* Project counter */}

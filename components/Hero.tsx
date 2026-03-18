@@ -1024,7 +1024,7 @@ export default function Hero() {
         </div>
 
         {/* Status pill */}
-        <div
+        {/* <div
           className="absolute pointer-events-none select-none"
           style={{
             left: "50%",
@@ -1036,7 +1036,7 @@ export default function Hero() {
             style={{
               padding: "clamp(4px,0.4vh,7px) clamp(10px,1vw,18px)",
               borderRadius: 999,
-              border: "1px solid rgba(74,222,128,0.18)",
+              border: "1px solid rgba(74, 222, 128, 1)",
               background: "rgba(74,222,128,0.04)",
               color: "#4ade80",
               fontSize: "clamp(9px,0.7vw,12px)",
@@ -1061,7 +1061,7 @@ export default function Hero() {
             />
             available for work
           </div>
-        </div>
+        </div> */}
 
         {/* Corner watermarks */}
         <div
@@ -1106,6 +1106,7 @@ export default function Hero() {
                 <div
                   style={{
                     padding: "3px clamp(10px,0.9vw,16px)",
+                    fontFamily: "'SF Mono','Fira Code','Consolas',monospace",
                     borderRadius: 999,
                     background: item.badge
                       ? "rgba(255,255,255,0.05)"

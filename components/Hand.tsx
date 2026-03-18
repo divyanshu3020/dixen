@@ -347,7 +347,7 @@ export default function Hand() {
               src="/images/left.png"
               alt="Designer hand"
               height={123}
-              width={287}
+              width={487}
               priority
               className="block"
               style={{
@@ -415,13 +415,14 @@ export default function Hand() {
               src="/images/right.png"
               alt="Developer hand"
               height={102}
-              width={289}
+              width={489}
               priority
               className=" block "
               style={{
                 filter: "drop-shadow(-20px 0px 40px rgba(0,0,0,0.95))",
                 maxWidth: "44vw",
                 height: "auto",
+                marginTop: "100px",
               }}
             />
           </div>

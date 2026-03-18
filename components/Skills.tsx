@@ -4,21 +4,21 @@ import { MeteoconsStarFill } from "@/common/Iconset";
 
 // ── Skill data with brand colors + categories ───────────────
 const skills = [
-  { name: "React",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",          color: "#61dafb", cat: "Frontend" },
-  { name: "Next.js",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",         color: "#ffffff", cat: "Framework", invert: true },
+  { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", color: "#61dafb", cat: "Frontend" },
+  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", color: "#ffffff", cat: "Framework", invert: true },
   { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg", color: "#3178c6", cat: "Language" },
   { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", color: "#f7df1e", cat: "Language" },
-  { name: "Node.js",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",         color: "#68a063", cat: "Runtime" },
-  { name: "Express",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",       color: "#ffffff", cat: "Backend",  invert: true },
-  { name: "Tailwind",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg", color: "#38bdf8", cat: "Styling" },
+  { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", color: "#68a063", cat: "Runtime" },
+  { name: "Express", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", color: "#ffffff", cat: "Backend", invert: true },
+  { name: "Tailwind", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg", color: "#38bdf8", cat: "Styling" },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", color: "#336791", cat: "Database" },
-  { name: "Docker",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",         color: "#2496ed", cat: "DevOps" },
-  { name: "Git",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",               color: "#f05032", cat: "VCS" },
-  { name: "GitHub",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",         color: "#ffffff", cat: "Platform", invert: true },
-  { name: "Linux",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",           color: "#fcc624", cat: "OS" },
-  { name: "Figma",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",           color: "#a259ff", cat: "Design" },
-  { name: "Framer",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg", color: "#0055ff", cat: "Motion" },
-  { name: "Notion",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/notion/notion-original.svg",         color: "#ffffff", cat: "Productivity", invert: true },
+  { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", color: "#2496ed", cat: "DevOps" },
+  { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg", color: "#f05032", cat: "VCS" },
+  { name: "GitHub", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg", color: "#ffffff", cat: "Platform", invert: true },
+  { name: "Linux", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg", color: "#fcc624", cat: "OS" },
+  { name: "Figma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg", color: "#a259ff", cat: "Design" },
+  { name: "Framer", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg", color: "#0055ff", cat: "Motion" },
+  { name: "Notion", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/notion/notion-original.svg", color: "#ffffff", cat: "Productivity", invert: true },
 ];
 
 const row1 = skills;
@@ -310,16 +310,19 @@ export default function SkillsMarquee() {
 
       {/* ── COUNT PILL ── */}
       <div className="relative z-10 flex justify-center mt-12">
-        <div style={{
-          padding: "7px 22px", borderRadius: "999px",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.10)",
-          color: "rgba(255,255,255,0.32)",
-          fontSize: "11px", fontWeight: 600, letterSpacing: "0.12em",
-          backdropFilter: "blur(10px)",
-        }}>
+        <div
+          className="hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl-purple-600/70 hover:border-purple-600/70"
+          style={{
+            padding: "17px 42px", borderRadius: "999px",
+            background: "rgba(4, 4, 4, 0.04)",
+            border: "1px solid rgba(255,255,255,0.10)",
+            color: "rgba(255,255,255,0.32)",
+            fontSize: "11px", fontWeight: 600, letterSpacing: "0.12em",
+            // backdropFilter: "blur(10px)",
+          }}>
           {skills.length} TECHNOLOGIES · AND COUNTING
         </div>
+
       </div>
 
     </section>

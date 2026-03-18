@@ -3,6 +3,7 @@
 import { forwardRef, useState } from "react";
 import ResumeModal from "@/common/ResumeModal";
 import Image from "next/image";
+import { LetsIconsView } from "@/common/Iconset";
 
 export interface NavbarSlotRefs {
   nameSlotRef: React.RefObject<HTMLDivElement | null>;
@@ -95,51 +96,40 @@ const Navbar = forwardRef<HTMLElement, NavbarSlotRefs>(
               {/* Resume button — now opens modal */}
               <button
                 onClick={() => setResumeOpen(true)}
-                className="flex items-center gap-1.5"
+                className="group relative flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer overflow-hidden"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
+                  background: "rgba(255,255,255,0.05)",
                   border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "12px",
-                  padding: "8px 16px",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
+                  transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background =
-                    "rgba(255,255,255,0.1)";
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "rgba(255,255,255,0.18)";
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.1)";
+                  el.style.borderColor = "rgba(255,255,255,0.22)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background =
-                    "rgba(255,255,255,0.06)";
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "rgba(255,255,255,0.1)";
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.05)";
+                  el.style.borderColor = "rgba(255,255,255,0.1)";
+                }}
+                onMouseDown={(e) => {
+                  (e.currentTarget as HTMLElement).style.transform = "scale(0.96)";
+                }}
+                onMouseUp={(e) => {
+                  (e.currentTarget as HTMLElement).style.transform = "scale(1)";
                 }}
               >
-                <span
-                  style={{
-                    color: "white",
-                    fontSize: 13,
-                    fontWeight: 500,
-                  }}
-                >
+                {/* top shimmer */}
+                <div className="absolute top-0 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+                <span className="text-[13px] font-semibold text-white/70 tracking-widest uppercase transition-colors duration-200 group-hover:text-white/95">
                   Resume
                 </span>
-                {/* Eye icon — signals "view" not "open new tab" */}
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.5)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
+
+                <LetsIconsView
+                  color="rgba(255,255,255,0.5)"
+                  className="transition-all duration-300 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </button>
             </div>
 
