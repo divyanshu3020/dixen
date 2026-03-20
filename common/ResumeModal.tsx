@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 interface ResumeModalProps {
@@ -12,6 +12,28 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [pdfSrc, setPdfSrc] = useState<string>("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile on mount and set appropriate PDF src
+  useEffect(() => {
+    const mobile =
+      /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ) || window.innerWidth < 768;
+    setIsMobile(mobile);
+
+    const pdfPath = "/resume.pdf";
+    if (mobile) {
+      // Google Docs viewer renders PDFs inline on mobile browsers
+      const fullUrl = `${window.location.origin}${pdfPath}`;
+      setPdfSrc(
+        `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(fullUrl)}`
+      );
+    } else {
+      setPdfSrc(`${pdfPath}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`);
+    }
+  }, []);
 
   // Mount/unmount animation
   useEffect(() => {
@@ -307,17 +329,36 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             borderRadius: "0 0 24px 24px",
           }}
         >
+          {/* Mobile fallback message — shown if Google Docs viewer fails */}
+          {isMobile && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 12,
+                left: 0,
+                right: 0,
+                textAlign: "center",
+                fontSize: 11,
+                color: "rgba(255,255,255,0.25)",
+                pointerEvents: "none",
+                zIndex: 1,
+              }}
+            >
+              Powered by Google Docs Viewer · Download if loading is slow
+            </div>
+          )}
           <iframe
             ref={iframeRef}
-            src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+            src={pdfSrc}
             style={{
               width: "100%",
               height: "100%",
               border: "none",
               display: "block",
-              background: "transparent",
+              background: isMobile ? "#fff" : "transparent",
             }}
             title="Divyanshu Singh — Resume"
+            allow="autoplay"
           />
         </div>
       </div>
