@@ -430,6 +430,7 @@ export default function Footer() {
         };
         if (data.data) {
           const vibeLabels = ["No vibe", "Meh", "Fire", "Dead", "King"];
+
           const counts = vibeLabels.map((label) => {
             const vibe = data.data.find((v) => v.vibe_type === label);
             return vibe?.count ?? 0;
@@ -446,8 +447,6 @@ export default function Footer() {
     fetchVibes();
   }, []);
 
-
-
   // ── spray canvas ─────────────────────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -463,8 +462,6 @@ export default function Footer() {
       if (snap.width > 0) ctx2d.putImageData(snap, 0, 0);
     };
     resize();
-
-
 
     const spray = (x: number, y: number) => {
       const color = activeColorRef.current;
@@ -487,8 +484,6 @@ export default function Footer() {
       }
       ctx2d.globalAlpha = 1;
     };
-
-
 
     const pos = (e: MouseEvent | TouchEvent) => {
       const r = canvas.getBoundingClientRect();
@@ -561,9 +556,13 @@ export default function Footer() {
         ctx2d.font = "italic 24px 'Comforter', sans-serif";
         ctx2d.fillStyle = activeColorRef.current;
         ctx2d.textAlign = "center";
-        
+
         ctx2d.globalAlpha = 1;
-        ctx2d.fillText("first spray something then save", canvas.width / 2, canvas.height / 2);
+        ctx2d.fillText(
+          "first spray something then save",
+          canvas.width / 2,
+          canvas.height / 2,
+        );
         showingWarningRef.current = true;
       }
       return;
@@ -585,7 +584,7 @@ export default function Footer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ canvas_data: canvasData }),
       });
-      
+
       clearCanvas();
     } catch (err) {
       console.error("Error saving spray wall to database:", err);
@@ -950,7 +949,9 @@ export default function Footer() {
               <p className="text-white/30 text-xs mt-2 max-w-sm leading-relaxed">
                 Pick a color, pick a size, drag to spray. Saves as a memory.
                 <br />
-                <Link href="/spraywall" className="text-[#ff9900]/80 hover:text-[#ff9900] underline underline-offset-4 decoration-[#ff9900]/30 transition-colors mt-1 inline-block">
+                <Link
+                  href="/spraywall"
+                  className="text-[#ff9900]/80 hover:text-[#ff9900] underline underline-offset-4 decoration-[#ff9900]/30 transition-colors mt-1 inline-block">
                   View the Spray Wall Gallery &rarr;
                 </Link>
               </p>
@@ -995,7 +996,6 @@ export default function Footer() {
                 ))}
               </div>
               <div className="flex items-center gap-2">
-
                 {hasTagged && (
                   <button
                     onClick={clearCanvas}
@@ -1077,36 +1077,36 @@ export default function Footer() {
                 </p>
               </div>
             )}
-              <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
 
           <div className="flex items-center justify-center gap-4 mt-6 mb-4">
-             <button
-               onClick={saveSnapshot}
-               className="px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
-               style={{
-                 color: "#000",
-                 background: "linear-gradient(135deg, #ff3c00, #ff9900)",
-                 boxShadow: "0 0 25px rgba(255,100,0,0.25)",
-                 border: "none",
-               }}>
-               <span>📸</span> Capture & Send to Gallery
-             </button>
-             {savedToast && (
-               <span
-                 className="text-[10px] tracking-widest uppercase px-3 py-2 rounded-xl"
-                 style={{
-                   color: "#00ff87",
-                   background: "rgba(0,255,135,0.07)",
-                   border: "1px solid rgba(0,255,135,0.15)",
-                   animation: "fadeInUp 0.3s ease",
-                 }}>
-                 ✓ saved
-               </span>
-             )}
+            <button
+              onClick={saveSnapshot}
+              className="px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+              style={{
+                color: "#000",
+                background: "linear-gradient(135deg, #ff3c00, #ff9900)",
+                boxShadow: "0 0 25px rgba(255,100,0,0.25)",
+                border: "none",
+              }}>
+              <span>📸</span> Capture & Send to Gallery
+            </button>
+            {savedToast && (
+              <span
+                className="text-[10px] tracking-widest uppercase px-3 py-2 rounded-xl"
+                style={{
+                  color: "#00ff87",
+                  background: "rgba(0,255,135,0.07)",
+                  border: "1px solid rgba(0,255,135,0.15)",
+                  animation: "fadeInUp 0.3s ease",
+                }}>
+                ✓ saved
+              </span>
+            )}
           </div>
         </div>
 
@@ -1507,9 +1507,7 @@ export default function Footer() {
                 <p className="text-white/50 text-[10px] tracking-widest uppercase mb-0.5">
                   Phone
                 </p>
-                <p className="text-white text-sm font-medium">
-                  +91 7617639230
-                </p>
+                <p className="text-white text-sm font-medium">+91 7617639230</p>
                 <p className="text-white/25 text-xs mt-0.5 group-hover:text-white/50 transition-colors">
                   {copied === "phone" ? "✓ copied!" : "click to copy"}
                 </p>
