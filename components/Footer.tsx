@@ -119,7 +119,7 @@ const platforms = [
 ];
 
 const existingMessages = [
-  { name: "Sumit", msg: "This portfolio hit different. 🔥", liked: false },
+  { name: "Sumit", msg: "Nice work bro !!. 🔥", liked: false },
   // { name: "Sarah M.", msg: "The GSAP animations are insane bro", liked: true },
   // { name: "Rahul D.", msg: "Hired. Let's build something.", liked: false },
 ];
