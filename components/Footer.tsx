@@ -845,7 +845,7 @@ export default function Footer() {
           <h2
             className="font-docallisme select-none cursor-default"
             style={{
-              fontSize: "clamp(80px,14vw,200px)",
+              fontSize: "clamp(56px,14vw,200px)",
               lineHeight: 0.85,
               letterSpacing: "-0.02em",
               filter: headingHovered
@@ -862,7 +862,7 @@ export default function Footer() {
               text="Build."
               active={headingHovered}
               gradientStyle={makeGrad("#ff9900", "#ffd700")}
-              style={{ marginLeft: "clamp(40px,8vw,120px)" }}
+              style={{ marginLeft: "clamp(20px,8vw,120px)" }}
             />
           </h2>
           <p
@@ -1086,12 +1086,13 @@ export default function Footer() {
           <div className="flex items-center justify-center gap-4 mt-6 mb-4">
             <button
               onClick={saveSnapshot}
-              className="px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+              className="w-full sm:w-auto px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
               style={{
                 color: "#000",
                 background: "linear-gradient(135deg, #ff3c00, #ff9900)",
                 boxShadow: "0 0 25px rgba(255,100,0,0.25)",
                 border: "none",
+                minHeight: "44px",
               }}>
               <span>📸</span> Capture & Send to Gallery
             </button>
@@ -1223,7 +1224,7 @@ export default function Footer() {
                         key={i}
                         onClick={() => handleVibe(i)}
                         disabled={selectedVibe !== null}
-                        className="relative flex items-center gap-1.5 px-3 py-1 rounded-full overflow-hidden transition-all duration-300 text-[11px]"
+                        className="relative flex items-center gap-1.5 px-3 py-2 sm:py-1 rounded-full overflow-hidden transition-all duration-300 text-[11px]"
                         style={{
                           background: isSel
                             ? v.color + "16"
@@ -1451,7 +1452,7 @@ export default function Footer() {
               reach out
             </p>
             <button
-              onClick={() => handleCopy("divyanshu@email.com", "email")}
+              onClick={() => handleCopy("divyanshus068@gmail.com", "email")}
               className="group flex items-start gap-4 text-left transition-all duration-200 hover:translate-x-1">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
@@ -1476,7 +1477,7 @@ export default function Footer() {
                   Email
                 </p>
                 <p className="text-white text-sm font-medium">
-                  divyanshu@email.com
+                  divyanshus068@gmail.com
                 </p>
                 <p className="text-white/25 text-xs mt-0.5 group-hover:text-white/50 transition-colors">
                   {copied === "email" ? "✓ copied!" : "click to copy"}

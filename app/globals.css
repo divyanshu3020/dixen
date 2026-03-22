@@ -47,4 +47,5 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans);
   background-color: black;
+  overflow-x: hidden;
 }

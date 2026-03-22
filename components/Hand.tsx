@@ -211,8 +211,8 @@ export default function Hand() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-black w-full overflow-hidden"
-      style={{ height: "100vh" }}>
+      className="relative bg-black w-full overflow-hidden min-h-[70vh] sm:h-screen"
+    >
       {/* ── CANVAS ── */}
       <canvas
         ref={canvasRef}
@@ -324,14 +324,14 @@ export default function Hand() {
 
       {/* ── ALL CONTENT — single flex column, perfectly centered ── */}
       <div
-        className="relative w-full h-full flex flex-col items-center justify-center"
+        className="relative w-full h-full flex flex-col items-center justify-center py-12"
         style={{ zIndex: 10 }}>
         {/* HEADING */}
         <div
           ref={headingRef}
-          className="flex items-center justify-center gap-6 mb-8 shrink-0">
+          className="flex items-center justify-center gap-4 sm:gap-6 mb-10 sm:mb-8 shrink-0 px-4">
           <MeteoconsStarFill />
-          <p className="font-docallisme text-white text-7xl leading-none tracking-wide">
+          <p className="font-docallisme text-white text-center text-4xl sm:text-7xl leading-none tracking-wide">
             What I actually do
           </p>
           <MeteoconsStarFill />
@@ -340,9 +340,9 @@ export default function Hand() {
         {/* HANDS + CENTER CLUSTER — all in one relative container */}
         <div
           className="relative w-full flex items-center justify-between shrink-0 pointer-events-none select-none"
-          style={{ height: "clamp(280px, 45vh, 520px)" }}>
-          {/* LEFT HAND */}
-          <div ref={leftHandRef} className="relative shrink-0">
+          style={{ height: "clamp(240px, 45vh, 520px)" }}>
+          {/* LEFT HAND — decorative, hidden on mobile */}
+          <div ref={leftHandRef} className="relative shrink-0 hidden sm:block">
             <Image
               src="/images/left.png"
               alt="Designer hand"
@@ -367,8 +367,8 @@ export default function Hand() {
               ref={glowRef}
               className="absolute"
               style={{
-                width: 380,
-                height: 380,
+                width: "min(380px, 80vw)",
+                height: "min(380px, 80vw)",
                 borderRadius: "50%",
                 background:
                   "radial-gradient(circle, rgba(74,222,128,0.45) 0%, rgba(74,222,128,0.14) 45%, transparent 72%)",
@@ -379,23 +379,21 @@ export default function Hand() {
             <div
               className="absolute rounded-full"
               style={{
-                width: 252,
-                height: 252,
+                width: "min(252px, 55vw)",
+                height: "min(252px, 55vw)",
                 border: "1px solid rgba(74,222,128,0.1)",
               }}
             />
             {/* Avatar */}
             <div
               ref={avatarRef}
-              className="relative"
+              className="relative w-[140px] h-[140px] sm:w-[180px] sm:h-[180px]"
               style={{
                 borderRadius: "50%",
                 border: "1.5px solid rgba(74,222,128,0.22)",
                 boxShadow:
                   "0 0 40px rgba(74,222,128,0.18), 0 0 80px rgba(74,222,128,0.07)",
                 overflow: "hidden",
-                width: 180,
-                height: 180,
                 zIndex: 30,
               }}>
               <Image
@@ -403,14 +401,13 @@ export default function Hand() {
                 alt="Divyanshu"
                 width={180}
                 height={180}
-                className="object-cover"
-                style={{ width: 180, height: 180 }}
+                className="object-cover w-full h-full"
               />
             </div>
           </div>
 
-          {/* RIGHT HAND */}
-          <div ref={rightHandRef} className="relative shrink-0">
+          {/* RIGHT HAND — decorative, hidden on mobile */}
+          <div ref={rightHandRef} className="relative shrink-0 hidden sm:block">
             <Image
               src="/images/right.png"
               alt="Developer hand"
@@ -431,7 +428,7 @@ export default function Hand() {
         {/* BRIDGE TEXT */}
         <div
           ref={bridgeTextRef}
-          className="w-full max-w-2xl px-8 text-center mt-6 shrink-0">
+          className="w-full max-w-2xl px-8 text-center mt-10 sm:mt-6 shrink-0">
           <p
             className="font-comforter italic leading-relaxed text-white/85"
             style={{ fontSize: "clamp(18px, 2.2vw, 32px)" }}>

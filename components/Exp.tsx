@@ -283,9 +283,9 @@ export default function Experience() {
       {/* ── HEADING ── */}
       <div
         ref={headingRef}
-        className="flex items-center justify-center gap-6 mb-20 relative z-10">
+        className="flex items-center justify-center gap-4 sm:gap-6 mb-12 sm:mb-20 relative z-10">
         <MeteoconsStarFill />
-        <p className="font-docallisme text-white text-7xl leading-none tracking-wide">
+        <p className="font-docallisme text-white text-4xl sm:text-7xl leading-none tracking-wide">
           Experience
         </p>
         <MeteoconsStarFill />
@@ -308,10 +308,14 @@ export default function Experience() {
             ref={(el) => {
               cardRefs.current[i] = el;
             }}
-            className={`relative w-full max-w-xl ${i % 2 === 0 ? "self-start" : "self-end"}`}>
-            {/* Timeline dot */}
+            className={`relative w-full max-w-xl ${
+              i % 2 === 0
+                ? "sm:self-start"
+                : "sm:self-end"
+            }`}>
+            {/* Timeline dot — hidden on mobile to avoid overlap */}
             <div
-              className="absolute top-8 w-3 h-3 rounded-full border border-white/20 z-10"
+              className="absolute top-8 w-3 h-3 rounded-full border border-white/20 z-10 hidden sm:block"
               style={{
                 background: exp.color,
                 boxShadow: `0 0 12px ${exp.color}, 0 0 24px ${exp.color}55`,
@@ -319,17 +323,19 @@ export default function Experience() {
               }}
             />
 
-            {/* Connector line from dot to card */}
+            {/* Connector line — hidden on mobile */}
             <div
-              className="absolute top-[2.6rem] h-px w-8 pointer-events-none"
+              className="absolute top-[2.6rem] h-px w-8 pointer-events-none hidden sm:block"
               style={{
                 [i % 2 === 0 ? "right" : "left"]: "-2rem",
-                background: `linear-gradient(${i % 2 === 0 ? "to left" : "to right"}, ${exp.color}66, transparent)`,
+                background: `linear-gradient(${
+                  i % 2 === 0 ? "to left" : "to right"
+                }, ${exp.color}66, transparent)`,
               }}
             />
 
             <GlowCard glowColor={exp.color}>
-              <div className="flex flex-col justify-between h-full p-7 gap-4">
+              <div className="flex flex-col justify-between h-full p-4 sm:p-7 gap-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-white font-semibold text-xl leading-tight">

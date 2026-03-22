@@ -24,23 +24,29 @@ const skills = [
 const row1 = skills;
 const row2 = [...skills.slice(7), ...skills.slice(0, 7)];
 
+// ── Size config — xs added for mobile ──────────────────────
+const sizeConfig = {
+  xs: { w: 80,  h: 92,  iconSize: 26, nameFontSize: "10px", catFontSize: "8px",  iconWrap: 42, gap: 3 },
+  sm: { w: 112, h: 128, iconSize: 36, nameFontSize: "11px", catFontSize: "9px",  iconWrap: 54, gap: 3 },
+  md: { w: 130, h: 148, iconSize: 44, nameFontSize: "12px", catFontSize: "9px",  iconWrap: 62, gap: 3 },
+};
+
 // ── Single skill card ───────────────────────────────────────
 function SkillCard({ skill, size = "md" }: {
   skill: typeof skills[0];
-  size?: "sm" | "md";
+  size?: "xs" | "sm" | "md";
 }) {
-  const w = size === "md" ? 130 : 112;
-  const h = size === "md" ? 148 : 128;
-  const iconSize = size === "md" ? 44 : 36;
+  const cfg = sizeConfig[size];
 
   return (
     <div
       className="group relative shrink-0 cursor-default select-none"
-      style={{ width: w, height: h }}
+      style={{ width: cfg.w, height: cfg.h }}
     >
       <div
-        className="relative w-full h-full flex flex-col items-center justify-center gap-3 rounded-2xl overflow-hidden"
+        className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl overflow-hidden"
         style={{
+          gap: cfg.gap,
           background: "rgba(18,18,38,0.75)",
           border: `1px solid ${skill.color}28`,
           backdropFilter: "blur(16px)",
@@ -84,8 +90,8 @@ function SkillCard({ skill, size = "md" }: {
         <div
           className="relative flex items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1"
           style={{
-            width: iconSize + 18,
-            height: iconSize + 18,
+            width: cfg.iconWrap,
+            height: cfg.iconWrap,
             background: `${skill.color}1e`,
             border: `1px solid ${skill.color}38`,
           }}
@@ -94,8 +100,8 @@ function SkillCard({ skill, size = "md" }: {
           <img
             src={skill.icon}
             alt={skill.name}
-            width={iconSize}
-            height={iconSize}
+            width={cfg.iconSize}
+            height={cfg.iconSize}
             style={{
               filter: skill.invert ? "invert(1) brightness(0.88)" : "none",
               display: "block",
@@ -108,7 +114,7 @@ function SkillCard({ skill, size = "md" }: {
           <p
             className="font-semibold leading-none"
             style={{
-              fontSize: size === "md" ? "12px" : "11px",
+              fontSize: cfg.nameFontSize,
               color: "rgba(255,255,255,0.88)",
               letterSpacing: "0.02em",
             }}
@@ -118,7 +124,7 @@ function SkillCard({ skill, size = "md" }: {
           <p
             className="mt-1"
             style={{
-              fontSize: "9px",
+              fontSize: cfg.catFontSize,
               color: skill.color,
               opacity: 0.6,
               letterSpacing: "0.12em",
@@ -161,8 +167,8 @@ function SkillCard({ skill, size = "md" }: {
   );
 }
 
-// ── Marquee row ─────────────────────────────────────────────
-function MarqueeRow({
+// ── Responsive marquee row — auto switches to xs on mobile ──
+function ResponsiveMarqueeRow({
   items,
   direction = "left",
   speed = 38,
@@ -171,7 +177,7 @@ function MarqueeRow({
   items: typeof skills;
   direction?: "left" | "right";
   speed?: number;
-  size?: "sm" | "md";
+  size?: "xs" | "sm" | "md";
 }) {
   const doubled = [...items, ...items];
   const animName = direction === "left" ? "marqueeLeft" : "marqueeRight";
@@ -179,15 +185,30 @@ function MarqueeRow({
   return (
     <div className="relative w-full overflow-hidden" style={{ padding: "8px 0" }}>
       {/* Left fade */}
-      <div className="pointer-events-none absolute left-0 top-0 h-full z-10"
-        style={{ width: "180px", background: "linear-gradient(to right, #03030a 20%, transparent)" }} />
-      {/* Right fade */}
-      <div className="pointer-events-none absolute right-0 top-0 h-full z-10"
-        style={{ width: "180px", background: "linear-gradient(to left, #03030a 20%, transparent)" }} />
-
       <div
+        className="pointer-events-none absolute left-0 top-0 h-full z-10 hidden sm:block"
+        style={{ width: "180px", background: "linear-gradient(to right, #03030a 20%, transparent)" }}
+      />
+      {/* Left fade — narrower on mobile */}
+      <div
+        className="pointer-events-none absolute left-0 top-0 h-full z-10 sm:hidden"
+        style={{ width: "40px", background: "linear-gradient(to right, #03030a 20%, transparent)" }}
+      />
+      {/* Right fade */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full z-10 hidden sm:block"
+        style={{ width: "180px", background: "linear-gradient(to left, #03030a 20%, transparent)" }}
+      />
+      {/* Right fade — narrower on mobile */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full z-10 sm:hidden"
+        style={{ width: "40px", background: "linear-gradient(to left, #03030a 20%, transparent)" }}
+      />
+
+      {/* Desktop row */}
+      <div
+        className="hidden sm:flex"
         style={{
-          display: "flex",
           width: "max-content",
           gap: "14px",
           animation: `${animName} ${speed}s linear infinite`,
@@ -199,6 +220,20 @@ function MarqueeRow({
           <SkillCard key={`${skill.name}-${i}`} skill={skill} size={size} />
         ))}
       </div>
+
+      {/* Mobile row — xs size, slightly faster */}
+      <div
+        className="flex sm:hidden"
+        style={{
+          width: "max-content",
+          gap: "8px",
+          animation: `${animName} ${Math.round(speed * 0.75)}s linear infinite`,
+        }}
+      >
+        {doubled.map((skill, i) => (
+          <SkillCard key={`xs-${skill.name}-${i}`} skill={skill} size="xs" />
+        ))}
+      </div>
     </div>
   );
 }
@@ -206,7 +241,7 @@ function MarqueeRow({
 // ── Main component ───────────────────────────────────────────
 export default function SkillsMarquee() {
   return (
-    <section className="relative w-full bg-[#03030a] py-20 overflow-hidden">
+    <section className="relative w-full bg-[#03030a] py-20 sm:py-20 overflow-hidden">
 
       <style>{`
         @keyframes marqueeLeft {
@@ -222,7 +257,7 @@ export default function SkillsMarquee() {
       {/* ── BACKGROUND ATMOSPHERE ── */}
       <div className="absolute inset-0 pointer-events-none">
 
-        {/* Ambient orbs — much brighter */}
+        {/* Ambient orbs */}
         <div style={{
           position: "absolute", top: "5%", left: "-8%",
           width: 640, height: 520,
@@ -241,14 +276,12 @@ export default function SkillsMarquee() {
           background: "radial-gradient(ellipse, rgba(56,189,248,0.12) 0%, transparent 65%)",
           filter: "blur(70px)",
         }} />
-        {/* Extra warm accent — bottom left */}
         <div style={{
           position: "absolute", bottom: "10%", left: "5%",
           width: 360, height: 280,
           background: "radial-gradient(ellipse, rgba(251,191,36,0.10) 0%, transparent 65%)",
           filter: "blur(60px)",
         }} />
-        {/* Extra accent — top right */}
         <div style={{
           position: "absolute", top: "0%", right: "15%",
           width: 320, height: 260,
@@ -256,7 +289,7 @@ export default function SkillsMarquee() {
           filter: "blur(60px)",
         }} />
 
-        {/* Dot grid — brighter */}
+        {/* Dot grid */}
         <div style={{
           position: "absolute", inset: 0, opacity: 0.10,
           backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.65) 1px, transparent 1px)",
@@ -272,12 +305,11 @@ export default function SkillsMarquee() {
           backgroundSize: "180px 180px",
         }} />
 
-        {/* Top edge line */}
+        {/* Edge lines */}
         <div style={{
           position: "absolute", top: 0, left: "6%", right: "6%", height: "1px",
           background: "linear-gradient(to right, transparent, rgba(97,218,251,0.25), transparent)",
         }} />
-        {/* Bottom edge line */}
         <div style={{
           position: "absolute", bottom: 0, left: "6%", right: "6%", height: "1px",
           background: "linear-gradient(to right, transparent, rgba(162,89,255,0.22), transparent)",
@@ -285,44 +317,48 @@ export default function SkillsMarquee() {
       </div>
 
       {/* ── HEADING ── */}
-      <div className="relative z-10 flex items-center justify-center gap-6 mb-14">
+      <div className="relative z-10 flex items-center justify-center gap-3 sm:gap-6 mb-10 sm:mb-14">
         <MeteoconsStarFill />
-        <p className="font-docallisme text-white text-7xl leading-none tracking-wide">
+        <p className="font-docallisme text-white text-5xl sm:text-7xl text-center leading-none tracking-wide">
           What I use
         </p>
         <MeteoconsStarFill />
       </div>
 
-      {/* ── HELPER TEXT ── */}
-      <p className="relative z-10 text-center text-white/30 text-xs tracking-[0.3em] uppercase mb-10">
+      {/* ── HELPER TEXT — desktop shows hover hint, mobile shows swipe hint ── */}
+      <p className="relative z-10 text-center text-white/30 text-xs tracking-[0.3em] uppercase mb-8 sm:mb-10 hidden sm:block">
         hover to pause · 15 tools in rotation
       </p>
+      <p className="relative z-10 text-center text-white/30 text-xs tracking-[0.3em] uppercase mb-8 sm:hidden">
+        swipe to explore · 15 tools
+      </p>
 
-      {/* ── ROW 1 — left, larger cards ── */}
+      {/* ── ROW 1 — left ── */}
       <div className="relative z-10 mb-3">
-        <MarqueeRow items={row1} direction="left" speed={40} size="md" />
+        <ResponsiveMarqueeRow items={row1} direction="left" speed={40} size="md" />
       </div>
 
-      {/* ── ROW 2 — right, smaller + offset ── */}
+      {/* ── ROW 2 — right ── */}
       <div className="relative z-10">
-        <MarqueeRow items={row2} direction="right" speed={34} size="sm" />
+        <ResponsiveMarqueeRow items={row2} direction="right" speed={34} size="sm" />
       </div>
 
       {/* ── COUNT PILL ── */}
-      <div className="relative z-10 flex justify-center mt-12">
+      <div className="relative z-10 flex justify-center mt-10 sm:mt-12 px-4">
         <div
-          className="hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl-purple-600/70 hover:border-purple-600/70"
+          className="hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer"
           style={{
-            padding: "17px 42px", borderRadius: "999px",
+            padding: "14px 28px",
+            borderRadius: "999px",
             background: "rgba(4, 4, 4, 0.04)",
             border: "1px solid rgba(255,255,255,0.10)",
             color: "rgba(255,255,255,0.32)",
-            fontSize: "11px", fontWeight: 600, letterSpacing: "0.12em",
-            // backdropFilter: "blur(10px)",
+            fontSize: "10px",
+            fontWeight: 600,
+            letterSpacing: "0.12em",
           }}>
           {skills.length} TECHNOLOGIES · AND COUNTING
         </div>
-
       </div>
 
     </section>

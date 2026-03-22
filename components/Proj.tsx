@@ -276,15 +276,118 @@ export default function Projects() {
         ref={sectionRef}
         className="relative w-full bg-black"
         style={{ overflowX: "clip" }}>
-        {/* ── HEADING ── */}
         <div
           ref={headingRef}
-          className="flex items-center justify-center gap-6 pt-24 pb-12 relative z-10">
+          className="flex items-center justify-center gap-4 sm:gap-6 pt-16 sm:pt-24 pb-8 sm:pb-12 relative z-10">
           <MeteoconsStarFill />
-          <p className="font-docallisme text-white text-7xl leading-none tracking-wide">
+          <p className="font-docallisme text-white text-4xl sm:text-7xl leading-none tracking-wide">
             Projects
           </p>
           <MeteoconsStarFill />
+        </div>
+
+        {/* ── MOBILE VERTICAL LAYOUT — shown on < md breakpoint ── */}
+        <div className="md:hidden px-4 pb-16 flex flex-col gap-6">
+          {projects.map((project, i) => (
+            <a
+              key={i}
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative w-full rounded-2xl overflow-hidden block"
+              style={{
+                border: `1px solid ${project.color}22`,
+                background: "#060606",
+                minHeight: "400px",
+              }}
+            >
+              {/* Image bg */}
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  style={{ opacity: 0.3 }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(180deg, rgba(6,6,6,0.5) 0%, rgba(6,6,6,0.92) 60%, rgba(6,6,6,0.98) 100%)`,
+                  }}
+                />
+              </div>
+              {/* Content */}
+              <div className="relative z-10 p-5 flex flex-col gap-3">
+                {/* Top row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{
+                        background: project.color,
+                        boxShadow: `0 0 8px ${project.color}`,
+                      }}
+                    />
+                    <span
+                      className="text-[10px] tracking-[0.3em] uppercase font-medium"
+                      style={{ color: `${project.color}cc` }}
+                    >
+                      {project.subtitle}
+                    </span>
+                  </div>
+                  <span
+                    className="font-docallisme leading-none select-none"
+                    style={{ fontSize: "clamp(36px,9vw,72px)", color: `${project.color}18` }}
+                  >
+                    {project.number}
+                  </span>
+                </div>
+                {/* Title */}
+                <h2
+                  className="font-docallisme text-white"
+                  style={{ fontSize: "clamp(28px,6vw,48px)", lineHeight: 0.95 }}
+                >
+                  {project.title}
+                </h2>
+                {/* Description */}
+                <p className="text-white/40 text-xs leading-relaxed">
+                  {project.description}
+                </p>
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] px-2.5 py-1 rounded-full"
+                      style={{
+                        border: `1px solid ${project.color}2a`,
+                        color: `${project.color}88`,
+                        background: `${project.color}0d`,
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {/* Tap hint */}
+                <p
+                  className="text-[9px] tracking-[0.25em] uppercase mt-1"
+                  style={{ color: `${project.color}55` }}
+                >
+                  tap to view →
+                </p>
+              </div>
+              {/* Bottom glow line */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+                style={{
+                  background: `linear-gradient(to right, transparent 5%, ${project.color}55 50%, transparent 95%)`,
+                }}
+              />
+            </a>
+          ))}
         </div>
 
         {/*
@@ -295,7 +398,7 @@ export default function Projects() {
         */}
         <div
           ref={triggerRef}
-          className="relative w-full"
+          className="relative w-full hidden md:block"
           style={{ height: "100vh", overflow: "hidden" }}>
           {/* Canvas */}
           <canvas
@@ -339,7 +442,7 @@ export default function Projects() {
 
           {/* Scroll hint */}
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 text-white/20 text-[10px] tracking-[0.3em] uppercase select-none">
-            
+
             scroll down to explore
             <svg
               width="14"

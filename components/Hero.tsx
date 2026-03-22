@@ -628,52 +628,52 @@ export default function Hero() {
       sy: number;
       c: [number, number, number];
     }> = [
-      {
-        cx: 0.18,
-        cy: 0.22,
-        rx: 0.55,
-        ry: 0.45,
-        sx: 0.00018,
-        sy: 0.00013,
-        c: [88, 28, 135],
-      },
-      {
-        cx: 0.75,
-        cy: 0.68,
-        rx: 0.5,
-        ry: 0.4,
-        sx: 0.00015,
-        sy: 0.0002,
-        c: [15, 50, 120],
-      },
-      {
-        cx: 0.5,
-        cy: 0.5,
-        rx: 0.4,
-        ry: 0.35,
-        sx: 0.0001,
-        sy: 0.00015,
-        c: [5, 60, 40],
-      },
-      {
-        cx: 0.85,
-        cy: 0.18,
-        rx: 0.35,
-        ry: 0.3,
-        sx: 0.00022,
-        sy: 0.00011,
-        c: [60, 30, 10],
-      },
-      {
-        cx: 0.12,
-        cy: 0.8,
-        rx: 0.38,
-        ry: 0.32,
-        sx: 0.00013,
-        sy: 0.00018,
-        c: [20, 5, 60],
-      },
-    ];
+        {
+          cx: 0.18,
+          cy: 0.22,
+          rx: 0.55,
+          ry: 0.45,
+          sx: 0.00018,
+          sy: 0.00013,
+          c: [88, 28, 135],
+        },
+        {
+          cx: 0.75,
+          cy: 0.68,
+          rx: 0.5,
+          ry: 0.4,
+          sx: 0.00015,
+          sy: 0.0002,
+          c: [15, 50, 120],
+        },
+        {
+          cx: 0.5,
+          cy: 0.5,
+          rx: 0.4,
+          ry: 0.35,
+          sx: 0.0001,
+          sy: 0.00015,
+          c: [5, 60, 40],
+        },
+        {
+          cx: 0.85,
+          cy: 0.18,
+          rx: 0.35,
+          ry: 0.3,
+          sx: 0.00022,
+          sy: 0.00011,
+          c: [60, 30, 10],
+        },
+        {
+          cx: 0.12,
+          cy: 0.8,
+          rx: 0.38,
+          ry: 0.32,
+          sx: 0.00013,
+          sy: 0.00018,
+          c: [20, 5, 60],
+        },
+      ];
 
     const draw = () => {
       t += 1;
@@ -935,7 +935,7 @@ export default function Hero() {
             />
             <p
               style={{
-                fontSize: "clamp(8px,0.6vw,11px)",
+                fontSize: "clamp(11px,0.6vw,11px)",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
                 color: "rgba(255,255,255,0.16)",
@@ -983,7 +983,7 @@ export default function Hero() {
             <p
               className="font-poppins"
               style={{
-                fontSize: "clamp(8px,0.6vw,12px)",
+                fontSize: "clamp(11px,0.6vw,12px)",
                 letterSpacing: "0.04em",
                 lineHeight: 1,
                 color: "rgba(255,255,255,0.5)",
