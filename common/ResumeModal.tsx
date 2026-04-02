@@ -23,7 +23,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
       ) || window.innerWidth < 768;
     setIsMobile(mobile);
 
-    const pdfPath = "/resume.pdf";
+    const pdfPath = "/CV-2026-amil.pdf";
     if (mobile) {
       // Google Docs viewer renders PDFs inline on mobile browsers
       const fullUrl = `${window.location.origin}${pdfPath}`;
@@ -221,7 +221,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {/* Download button */}
             <a
-              href="/resume.pdf"
+              href="/CV-2026-amil.pdf"
               download
               style={{
                 display: "flex",
