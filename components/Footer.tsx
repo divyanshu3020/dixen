@@ -594,51 +594,56 @@ export default function Footer() {
   // ── interactions ─────────────────────────────────────────
   const handleLike = async () => {
     if (liked || likeLoading) return;
-    try {
-      setLikeLoading(true);
-      setLiked(true);
+    
+    // Optimistic update: show feedback immediately
+    setLiked(true);
+    setLikeCount((prev) => prev + 1);
+    setLikeLoading(true);
 
+    // Animation starts immediately (not waiting for server)
+    gsap
+      .timeline()
+      .to(likeRef.current, { scale: 1.4, duration: 0.15, ease: "power2.out" })
+      .to(likeRef.current, {
+        scale: 1,
+        duration: 0.4,
+        ease: "elastic.out(1,0.4)",
+      });
+
+    if (particlesRef.current) {
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement("div");
+        const cols = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bff"];
+        p.style.cssText = `position:absolute;width:6px;height:6px;border-radius:50%;background:${cols[i % cols.length]};pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%);`;
+        particlesRef.current.appendChild(p);
+        const a = (i / 12) * Math.PI * 2,
+          d = 40 + Math.random() * 30;
+        gsap.to(p, {
+          x: Math.cos(a) * d,
+          y: Math.sin(a) * d,
+          opacity: 0,
+          scale: 0,
+          duration: 0.7,
+          ease: "power2.out",
+          onComplete: () => p.remove(),
+        });
+      }
+    }
+
+    // Fire async request in background
+    try {
       const res = await fetch("/api/likes", { method: "POST" });
       if (!res.ok) {
-        setLiked(false);
         throw new Error("Failed to increment likes");
       }
-
       const data = (await res.json()) as { likes: number };
+      // Verify the count matches (acts as sync check)
       setLikeCount(data.likes);
-
-      // Animation
-      gsap
-        .timeline()
-        .to(likeRef.current, { scale: 1.4, duration: 0.15, ease: "power2.out" })
-        .to(likeRef.current, {
-          scale: 1,
-          duration: 0.4,
-          ease: "elastic.out(1,0.4)",
-        });
-
-      if (particlesRef.current) {
-        for (let i = 0; i < 12; i++) {
-          const p = document.createElement("div");
-          const cols = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6bff"];
-          p.style.cssText = `position:absolute;width:6px;height:6px;border-radius:50%;background:${cols[i % cols.length]};pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%);`;
-          particlesRef.current.appendChild(p);
-          const a = (i / 12) * Math.PI * 2,
-            d = 40 + Math.random() * 30;
-          gsap.to(p, {
-            x: Math.cos(a) * d,
-            y: Math.sin(a) * d,
-            opacity: 0,
-            scale: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            onComplete: () => p.remove(),
-          });
-        }
-      }
     } catch (err) {
       console.error("Error liking:", err);
+      // Revert optimistic update on error
       setLiked(false);
+      setLikeCount((prev) => Math.max(0, prev - 1));
     } finally {
       setLikeLoading(false);
     }

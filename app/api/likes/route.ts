@@ -30,62 +30,73 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const { data: existing, error: fetchError } = await supabase
-      .from("portfolio_stats")
-      .select("likes, id")
-      .single();
+    // Try to upsert: increment if exists, insert if not
+    // Use raw SQL for atomic increment (single query, no race conditions)
+    const { data, error } = await supabase.rpc("increment_likes");
 
-    if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Error fetching current likes:", fetchError);
-      return NextResponse.json(
-        { error: "Failed to increment likes" },
-        { status: 500 },
-      );
-    }
-
-    const newLikes = (existing?.likes ?? 0) + 1;
-    const statsId = existing?.id;
-
-    if (statsId) {
-      const { data, error } = await supabase
+    if (error) {
+      console.error("Error incrementing likes:", error);
+      // Fallback to read-then-update for compatibility
+      const { data: existing, error: fetchError } = await supabase
         .from("portfolio_stats")
-        .update({ likes: newLikes })
-        .eq("id", statsId)
-        .select()
+        .select("likes, id")
         .single();
 
-      if (error) {
-        console.error("Error updating likes:", error);
+      if (fetchError && fetchError.code !== "PGRST116") {
         return NextResponse.json(
           { error: "Failed to increment likes" },
           { status: 500 },
         );
       }
 
-      return NextResponse.json(
-        { likes: (data as PortfolioStats).likes },
-        { status: 200 },
-      );
-    } else {
-      const { data, error } = await supabase
-        .from("portfolio_stats")
-        .insert([{ likes: newLikes }])
-        .select()
-        .single();
+      const newLikes = (existing?.likes ?? 0) + 1;
+      const statsId = existing?.id;
 
-      if (error) {
-        console.error("Error creating stats entry:", error);
+      if (statsId) {
+        const { data: updated, error: updateError } = await supabase
+          .from("portfolio_stats")
+          .update({ likes: newLikes })
+          .eq("id", statsId)
+          .select()
+          .single();
+
+        if (updateError) {
+          return NextResponse.json(
+            { error: "Failed to increment likes" },
+            { status: 500 },
+          );
+        }
+
         return NextResponse.json(
-          { error: "Failed to increment likes" },
-          { status: 500 },
+          { likes: (updated as PortfolioStats).likes },
+          { status: 200 },
+        );
+      } else {
+        const { data: inserted, error: insertError } = await supabase
+          .from("portfolio_stats")
+          .insert([{ likes: 1 }])
+          .select()
+          .single();
+
+        if (insertError) {
+          return NextResponse.json(
+            { error: "Failed to increment likes" },
+            { status: 500 },
+          );
+        }
+
+        return NextResponse.json(
+          { likes: (inserted as PortfolioStats).likes },
+          { status: 201 },
         );
       }
-
-      return NextResponse.json(
-        { likes: (data as PortfolioStats).likes },
-        { status: 201 },
-      );
     }
+
+    // Return immediately with the new count
+    return NextResponse.json(
+      { likes: data?.likes ?? 0 },
+      { status: 200 },
+    );
   } catch (err) {
     console.error("Unexpected error:", err);
     return NextResponse.json(
