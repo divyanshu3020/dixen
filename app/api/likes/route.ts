@@ -35,7 +35,9 @@ export async function POST() {
     const { data, error } = await supabase.rpc("increment_likes");
 
     if (error) {
-      console.error("Error incrementing likes:", error);
+      if (error.code !== "PGRST202") {
+        console.error("Error incrementing likes:", error);
+      }
       // Fallback to read-then-update for compatibility
       const { data: existing, error: fetchError } = await supabase
         .from("portfolio_stats")
