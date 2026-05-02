@@ -1,10 +1,11 @@
-import  Hand  from "@/components/Hand";
-import Hero from "@/components/Hero"
-import Skills from "@/components/Skills";
-import Experience from "@/components/Exp";
-import Projects from "@/components/Proj"
-import Footer from "@/components/Footer"
-// import Footer from "@/components/alternatives/Footer1";
+import dynamic from "next/dynamic";
+import Hero from "@/components/Hero";
+
+const Hand = dynamic(() => import("@/components/Hand"));
+const Skills = dynamic(() => import("@/components/Skills"));
+const Experience = dynamic(() => import("@/components/Exp"));
+const Projects = dynamic(() => import("@/components/Proj"));
+const Footer = dynamic(() => import("@/components/Footer"));
 
 export default function Home() {
   return (

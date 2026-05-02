@@ -1,21 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Docallisme On Street";
-  src:
-    url("/fonts/DOCALLISME ON STREET.ttf") format("truetype"),
-    url("/fonts/docallismeonstreet.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Sedgwick Ave Display";
-  src: url("/fonts/SedgwickAveDisplay-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
-
 :root {
   --background: #ffffff;
   --foreground: #171717;

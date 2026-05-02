@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { MeteoconsStarFill } from "@/common/Iconset";
 
 // ── Skill data with brand colors + categories ───────────────
@@ -32,7 +33,7 @@ const sizeConfig = {
 };
 
 // ── Single skill card ───────────────────────────────────────
-function SkillCard({ skill, size = "md" }: {
+const SkillCard = memo(function SkillCard({ skill, size = "md" }: {
   skill: typeof skills[0];
   size?: "xs" | "sm" | "md";
 }) {
@@ -165,7 +166,7 @@ function SkillCard({ skill, size = "md" }: {
       </div>
     </div>
   );
-}
+});
 
 // ── Responsive marquee row — auto switches to xs on mobile ──
 function ResponsiveMarqueeRow({
@@ -179,7 +180,7 @@ function ResponsiveMarqueeRow({
   speed?: number;
   size?: "xs" | "sm" | "md";
 }) {
-  const doubled = [...items, ...items];
+  const doubled = useMemo(() => [...items, ...items], [items]);
   const animName = direction === "left" ? "marqueeLeft" : "marqueeRight";
 
   return (

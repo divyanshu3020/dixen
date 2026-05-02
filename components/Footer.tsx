@@ -157,7 +157,7 @@ function GlitchLine({
   gradientStyle: React.CSSProperties;
   style?: React.CSSProperties;
 }) {
-  const [glitch, setGlitch] = useState<string[]>(() => text.split(""));
+  const spanRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const frameRef = useRef(0);
 
@@ -165,7 +165,7 @@ function GlitchLine({
     if (timerRef.current) clearTimeout(timerRef.current);
     if (!active) {
       frameRef.current = 0;
-      setGlitch(text.split(""));
+      if (spanRef.current) spanRef.current.innerText = text;
       return;
     }
 
@@ -176,17 +176,23 @@ function GlitchLine({
     const run = () => {
       frameRef.current++;
       const resolved = Math.floor(frameRef.current / 3);
-      let ri = 0;
-      setGlitch(
-        text.split("").map((ch) => {
-          if (ch === " ") return " ";
-          ri++;
-          if (ri <= resolved) return ch;
-          return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-        }),
-      );
-      if (frameRef.current < total * 3) timerRef.current = setTimeout(run, 40);
-      else setGlitch(text.split(""));
+      if (spanRef.current) {
+        let ri = 0;
+        spanRef.current.innerText = text
+          .split("")
+          .map((ch) => {
+            if (ch === " ") return " ";
+            ri++;
+            if (ri <= resolved) return ch;
+            return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+          })
+          .join("");
+      }
+      if (frameRef.current < total * 3) {
+        timerRef.current = setTimeout(run, 40);
+      } else {
+        if (spanRef.current) spanRef.current.innerText = text;
+      }
     };
     run();
     return () => {
@@ -211,6 +217,7 @@ function GlitchLine({
       </span>
       {/* visible glitch — absolute, never touches layout */}
       <span
+        ref={spanRef}
         style={{
           ...shared,
           position: "absolute",
@@ -221,7 +228,7 @@ function GlitchLine({
           userSelect: "none",
         }}
         aria-hidden="true">
-        {glitch.join("")}
+        {text}
       </span>
     </span>
   );
@@ -239,7 +246,7 @@ function StatCounter({
   label: string;
   suffix?: string;
 }) {
-  const [count, setCount] = useState(0);
+  const spanRef = useRef<HTMLSpanElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
@@ -254,7 +261,7 @@ function StatCounter({
           const step = Math.max(1, Math.ceil(end / 60));
           const id = setInterval(() => {
             v = Math.min(v + step, end);
-            setCount(v);
+            if (spanRef.current) spanRef.current.innerText = v.toString();
             if (v >= end) clearInterval(id);
           }, 16);
         }
@@ -268,10 +275,10 @@ function StatCounter({
   return (
     <div ref={ref} className="flex flex-col items-center gap-1.5">
       <span
+        ref={spanRef}
         className="font-serif text-white leading-none"
         style={{ fontSize: "clamp(30px,4vw,56px)" }}>
-        {count}
-        {suffix}
+        0{suffix}
       </span>
       <span className="text-white/25 text-[9px] tracking-[0.3em] uppercase text-center mt-2">
         {label}
@@ -454,14 +461,25 @@ export default function Footer() {
     const ctx2d = canvas.getContext("2d");
     if (!ctx2d) return;
 
+    let canvasRect: DOMRect | null = null;
+    let sprayRafId: number | null = null;
+    let lastSprayPos = { x: 0, y: 0 };
+    let hasTaggedLocal = false;
+
+    const updateRect = () => {
+      if (canvas) canvasRect = canvas.getBoundingClientRect();
+    };
+
     const resize = () => {
       const rect = canvas.parentElement!.getBoundingClientRect();
       const snap = ctx2d.getImageData(0, 0, canvas.width, canvas.height);
       canvas.width = rect.width;
       canvas.height = rect.height;
       if (snap.width > 0) ctx2d.putImageData(snap, 0, 0);
+      updateRect();
     };
     resize();
+    window.addEventListener("scroll", updateRect, { passive: true });
 
     const spray = (x: number, y: number) => {
       const color = activeColorRef.current;
@@ -485,8 +503,9 @@ export default function Footer() {
       ctx2d.globalAlpha = 1;
     };
 
-    const pos = (e: MouseEvent | TouchEvent) => {
-      const r = canvas.getBoundingClientRect();
+    const getPos = (e: MouseEvent | TouchEvent) => {
+      if (!canvasRect) updateRect();
+      const r = canvasRect!;
       if ("touches" in e)
         return {
           x: e.touches[0].clientX - r.left,
@@ -498,6 +517,11 @@ export default function Footer() {
       };
     };
 
+    const renderSpray = () => {
+      spray(lastSprayPos.x, lastSprayPos.y);
+      sprayRafId = null;
+    };
+
     const onDown = (e: MouseEvent | TouchEvent) => {
       if (showingWarningRef.current) {
         clearCanvas();
@@ -505,14 +529,18 @@ export default function Footer() {
       }
       isDrawingRef.current = true;
       setIsDrawing(true);
-      const p = pos(e);
-      spray(p.x, p.y);
+      lastSprayPos = getPos(e);
+      if (!sprayRafId) sprayRafId = requestAnimationFrame(renderSpray);
     };
+
     const onMove = (e: MouseEvent | TouchEvent) => {
       if (!isDrawingRef.current) return;
-      const p = pos(e);
-      spray(p.x, p.y);
-      setHasTagged(true);
+      lastSprayPos = getPos(e);
+      if (!sprayRafId) sprayRafId = requestAnimationFrame(renderSpray);
+      if (!hasTaggedLocal) {
+        hasTaggedLocal = true;
+        setHasTagged(true);
+      }
     };
     const onUp = () => {
       isDrawingRef.current = false;
@@ -528,6 +556,8 @@ export default function Footer() {
     canvas.addEventListener("touchend", onUp);
     window.addEventListener("resize", resize);
     return () => {
+      if (sprayRafId) cancelAnimationFrame(sprayRafId);
+      window.removeEventListener("scroll", updateRect);
       canvas.removeEventListener("mousedown", onDown);
       canvas.removeEventListener("mousemove", onMove);
       canvas.removeEventListener("mouseup", onUp);

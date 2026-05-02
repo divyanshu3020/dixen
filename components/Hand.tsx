@@ -75,7 +75,20 @@ export default function Hand() {
       },
     ];
 
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    observer.observe(canvas);
+
     const draw = () => {
+      if (!isVisible) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
       t += 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       waves.forEach((w) => {
@@ -123,6 +136,7 @@ export default function Hand() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
@@ -138,9 +152,8 @@ export default function Hand() {
       gsap.set(avatarRef.current, {
         opacity: 0,
         scale: 0.82,
-        filter: "blur(6px)",
       });
-      gsap.set(headingRef.current, { opacity: 0, y: 28, filter: "blur(6px)" });
+      gsap.set(headingRef.current, { opacity: 0, y: 28 });
       gsap.set(orbsRef.current, { opacity: 0 });
       gsap.set(labelLeftRef.current, { opacity: 0, x: -18 });
       gsap.set(labelRightRef.current, { opacity: 0, x: 18 });
@@ -169,7 +182,7 @@ export default function Hand() {
       tl.to(orbsRef.current, { opacity: 1, duration: 0.3 }, 0);
       tl.to(
         headingRef.current,
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5 },
+        { opacity: 1, y: 0, duration: 0.5 },
         0.05,
       );
       tl.to(
@@ -185,7 +198,7 @@ export default function Hand() {
       tl.to(glowRef.current, { opacity: 1, scale: 1, duration: 0.4 }, 0.35);
       tl.to(
         avatarRef.current,
-        { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.4 },
+        { opacity: 1, scale: 1, duration: 0.4 },
         0.3,
       );
       tl.to(lineLeftRef.current, { scaleX: 1, duration: 0.3 }, 0.55);
@@ -194,7 +207,7 @@ export default function Hand() {
       tl.to(labelRightRef.current, { opacity: 1, x: 0, duration: 0.3 }, 0.65);
       tl.to(
         bridgeTextRef.current,
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45 },
+        { opacity: 1, y: 0, duration: 0.45 },
         0.32,
       );
       tl.to(taglineRef.current, { opacity: 1, y: 0, duration: 0.3 }, 0.45);
@@ -348,7 +361,6 @@ export default function Hand() {
               alt="Designer hand"
               height={123}
               width={487}
-              priority
               className="block"
               style={{
                 filter: "drop-shadow(20px 0px 40px rgba(0,0,0,0.95))",
@@ -413,7 +425,6 @@ export default function Hand() {
               alt="Developer hand"
               height={102}
               width={489}
-              priority
               className=" block "
               style={{
                 filter: "drop-shadow(-20px 0px 40px rgba(0,0,0,0.95))",

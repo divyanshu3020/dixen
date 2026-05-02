@@ -94,7 +94,20 @@ export default function Projects() {
     resize();
     window.addEventListener("resize", resize);
 
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    observer.observe(canvas);
+
     const draw = () => {
+      if (!isVisible) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
       t += 0.003;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -142,21 +155,32 @@ export default function Projects() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
   // ── Custom cursor ───────────────────────────────────────────
   useEffect(() => {
+    let rafId: number | null = null;
     const move = (e: MouseEvent) => {
-      gsap.to(cursorRef.current, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1,
-        ease: "power2.out",
-      });
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          gsap.to(cursorRef.current, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          rafId = null;
+        });
+      }
     };
     window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", move);
+    };
   }, []);
 
   const showCursor = (color: string) => {
@@ -214,11 +238,10 @@ export default function Projects() {
 
       gsap.fromTo(
         headingRef.current,
-        { opacity: 0, y: 50, filter: "blur(10px)" },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          filter: "blur(0px)",
           duration: 1,
           ease: "power3.out",
           scrollTrigger: {

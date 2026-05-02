@@ -92,9 +92,11 @@ export async function POST() {
       }
     }
 
-    // Return immediately with the new count
+    // If rpc returned a primitive (number), use it. If it returned an object, use data.likes.
+    const likesValue = typeof data === "object" && data !== null ? data.likes : data;
+    
     return NextResponse.json(
-      { likes: data?.likes ?? 0 },
+      { likes: likesValue ?? 0 },
       { status: 200 },
     );
   } catch (err) {

@@ -137,13 +137,12 @@ export default function Experience() {
         const fromX = i % 2 === 0 ? -60 : 60;
         gsap.fromTo(
           card,
-          { opacity: 0, x: fromX, y: 50, scale: 0.95, filter: "blur(8px)" },
+          { opacity: 0, x: fromX, y: 50, scale: 0.95 },
           {
             opacity: 1,
             x: 0,
             y: 0,
             scale: 1,
-            filter: "blur(0px)",
             duration: 1,
             ease: "power3.out",
             scrollTrigger: {

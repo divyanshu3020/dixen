@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  memo,
 } from "react";
 import Image from "next/image";
 import gsap from "gsap";
@@ -235,7 +236,7 @@ interface DraggableCardProps {
   scale: number; // vw-based scale factor
 }
 
-function DraggableCard({
+const DraggableCard = memo(function DraggableCard({
   card,
   zBase,
   cardW,
@@ -286,8 +287,14 @@ function DraggableCard({
       },
     );
 
+    let rectCache: DOMRect | null = null;
+    let rafId: number | null = null;
+    let mouseX = 0;
+    let mouseY = 0;
+
     const onEnter = () => {
       if (isDragging.current) return;
+      rectCache = el.getBoundingClientRect();
       gsap.to(el, {
         scale: 1.05,
         duration: 0.25,
@@ -295,11 +302,11 @@ function DraggableCard({
         overwrite: "auto",
       });
     };
-    const onMove = (e: MouseEvent) => {
-      if (isDragging.current) return;
-      const r = el.getBoundingClientRect();
-      const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
-      const dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+
+    const updateRotation = () => {
+      if (!rectCache) return;
+      const dx = (mouseX - rectCache.left - rectCache.width / 2) / (rectCache.width / 2);
+      const dy = (mouseY - rectCache.top - rectCache.height / 2) / (rectCache.height / 2);
       gsap.to(el, {
         rotateX: -dy * 13,
         rotateY: dx * 13,
@@ -307,8 +314,24 @@ function DraggableCard({
         ease: "power2.out",
         overwrite: "auto",
       });
+      rafId = null;
     };
+
+    const onMove = (e: MouseEvent) => {
+      if (isDragging.current || !rectCache) return;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!rafId) {
+        rafId = requestAnimationFrame(updateRotation);
+      }
+    };
+
     const onLeave = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      rectCache = null;
       if (isDragging.current) return;
       gsap.to(el, {
         rotateX: 0,
@@ -370,6 +393,7 @@ function DraggableCard({
     el.addEventListener("pointerup", onPointerUp);
     el.addEventListener("pointercancel", onPointerUp);
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       floatTween.current?.kill();
       el.removeEventListener("mouseenter", onEnter);
       el.removeEventListener("mousemove", onMove);
@@ -382,7 +406,6 @@ function DraggableCard({
   }, [card.baseRotate, card.floatDelay, startFloat]);
 
   const lines = card.headline.split("\n");
-  // Scale font sizes with the card
   const headlinePx = Math.round(card.headlineSize * scale);
   const eyebrowPx = Math.round(9 * scale);
   const captionPx = Math.round(11 * scale);
@@ -413,7 +436,6 @@ function DraggableCard({
           border: `1px solid ${card.accent}28`,
           boxShadow: `0 16px 56px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 40px ${card.accent}0d`,
         }}>
-        <CardNoise />
         <div
           style={{
             position: "absolute",
@@ -499,7 +521,7 @@ function DraggableCard({
       </div>
     </div>
   );
-}
+});
 
 function CardColumn({ side }: { side: "left" | "right" }) {
   const cards = CARDS.filter((c) => c.side === side).sort(
@@ -602,7 +624,7 @@ export default function Hero() {
   const introAreaRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [isDraggingHero, setIsDraggingHero] = useState(false);
+  const peekRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -611,6 +633,7 @@ export default function Hero() {
     if (!ctx) return;
     let animId = 0;
     let t = 0;
+    let isVisible = true;
 
     const resize = () => {
       canvas.width = canvas.offsetWidth;
@@ -618,6 +641,14 @@ export default function Hero() {
     };
     resize();
     window.addEventListener("resize", resize);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    observer.observe(canvas);
 
     const blobs: Array<{
       cx: number;
@@ -676,6 +707,10 @@ export default function Hero() {
       ];
 
     const draw = () => {
+      if (!isVisible) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
       t += 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       blobs.forEach((b, i) => {
@@ -704,6 +739,7 @@ export default function Hero() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
@@ -739,7 +775,6 @@ export default function Hero() {
           opacity: 0,
           y: -40,
           scale: 0.75,
-          filter: "blur(6px)",
           duration: 1.8,
           ease: "power3.in",
         },
@@ -755,11 +790,10 @@ export default function Hero() {
       sentences.forEach((s) => {
         tl.fromTo(
           s,
-          { opacity: 0, y: 44, filter: "blur(12px)" },
+          { opacity: 0, y: 44 },
           {
             opacity: 1,
             y: 0,
-            filter: "blur(0px)",
             duration: 1,
             ease: "power2.out",
           },
@@ -770,7 +804,6 @@ export default function Hero() {
             {
               opacity: 0,
               y: -44,
-              filter: "blur(12px)",
               duration: 1,
               ease: "power2.in",
             },
@@ -791,10 +824,10 @@ export default function Hero() {
       onDragStart() {
         originX = gsap.getProperty(el, "x") as number;
         originY = gsap.getProperty(el, "y") as number;
-        setIsDraggingHero(true);
+        if (peekRef.current) peekRef.current.style.opacity = "1";
       },
       onDragEnd() {
-        setIsDraggingHero(false);
+        if (peekRef.current) peekRef.current.style.opacity = "0";
         gsap.to(el, {
           x: originX,
           y: originY,
@@ -966,6 +999,7 @@ export default function Hero() {
           }}>
           {/* Peekaboo */}
           <div
+            ref={peekRef}
             style={{
               position: "absolute",
               inset: 0,
@@ -976,7 +1010,7 @@ export default function Hero() {
               zIndex: 0,
               userSelect: "none",
               gap: 6,
-              opacity: isDraggingHero ? 1 : 0,
+              opacity: 0,
               transition: "opacity 0.2s ease",
               pointerEvents: "none",
             }}>
@@ -1007,6 +1041,7 @@ export default function Hero() {
               src="/images/meava.png"
               alt="Divyanshu Singh"
               fill
+              priority
               className="object-cover"
               style={{ borderRadius: "clamp(14px,1.2vw,22px)" }}
               draggable={false}
