@@ -143,7 +143,7 @@ export default function Hand() {
       gsap.set(bridgeTextRef.current, {
         opacity: 0,
         y: 40,
-        filter: "blur(8px)",
+        filter: "blur(0px)",
       });
       gsap.set(glowRef.current, { opacity: 0, scale: 0.4 });
       gsap.set(avatarRef.current, {
