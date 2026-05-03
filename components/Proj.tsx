@@ -264,7 +264,7 @@ export default function Projects() {
       {/* ── CUSTOM CURSOR ── */}
       <div
         ref={cursorRef}
-        className="fixed pointer-events-none z-[9999] flex items-center justify-center"
+        className="fixed pointer-events-none z-9999 flex items-center justify-center"
         style={{
           top: 0,
           left: 0,
@@ -452,7 +452,7 @@ export default function Projects() {
 
           {/* Vignette */}
           <div
-            className="absolute inset-0 pointer-events-none z-[1]"
+            className="absolute inset-0 pointer-events-none z-1"
             style={{
               background:
                 "radial-gradient(ellipse 85% 75% at 50% 50%, transparent 35%, rgba(0,0,0,0.92) 100%)",
@@ -461,14 +461,14 @@ export default function Projects() {
 
           {/* Edge fades */}
           <div
-            className="absolute left-0 top-0 h-full w-24 pointer-events-none z-[2]"
+            className="absolute left-0 top-0 h-full w-24 pointer-events-none z-2"
             style={{
               background:
                 "linear-gradient(to right, rgba(0,0,0,0.9), transparent)",
             }}
           />
           <div
-            className="absolute right-0 top-0 h-full w-24 pointer-events-none z-[2]"
+            className="absolute right-0 top-0 h-full w-24 pointer-events-none z-2"
             style={{
               background:
                 "linear-gradient(to left, rgba(0,0,0,0.9), transparent)",
