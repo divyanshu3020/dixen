@@ -1,0 +1,17 @@
+export const gifs = {
+  gif1: "/videos/Arnold.mp4",
+  gif2: "/videos/codetyping.mp4",
+  gif3: "/videos/easytolive.mp4",
+  gif4: "/videos/excuseme.mp4",
+  gif5: "/videos/izara.mp4",
+  gif6: "/videos/leo.mp4",
+  gif7: "/videos/mindblown.mp4",
+  gif8: "/videos/nope.mp4",
+  gif9: "/videos/panda.mp4",
+  gif10: "videos/signbridge-gif.mp4",
+  gif11: "/videos/simpsons.mp4",
+  gif12: "/videos/tutor.mp4",
+  gif13:"/videos/cateye.mp4",
+  gif14:"/videos/penguin.mp4",
+  nogif: "/videos/sherek.mp4",
+};

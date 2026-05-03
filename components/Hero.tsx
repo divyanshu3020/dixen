@@ -9,18 +9,16 @@ import {
   memo,
 } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger, Draggable } from "@/lib/gsap";
+import { gifs } from "@/utils/mediaProvider";
 import Navbar from "./Navbar";
-import Draggable from "gsap/dist/Draggable";
-
-gsap.registerPlugin(ScrollTrigger, Draggable);
+import VideoWithFallback from "@/utils/videoWithFallback";
 
 const NAVBAR_H = 88;
 
 interface ContentStep {
   text: string;
-  gif?: string | string[];
+  gif?: keyof typeof gifs | (keyof typeof gifs)[];
   badge?: string;
   tag?: string;
 }
@@ -28,7 +26,7 @@ interface ContentStep {
 const content: ContentStep[] = [
   {
     text: "Yes I'm a Developer",
-    gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnR3OWY2eGw1ZWMwbGxjcDloeW95NnBmbzNsa2V6ZGUzdXJvOXc1eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ws6T5PN7wHv3cY8xy8/giphy.gif",
+    gif: "gif2",
     badge: "🧑‍💻 confirmed",
   },
   { text: "Someone who speaks fluent JS and React", tag: "since 2021" },
@@ -38,62 +36,62 @@ const content: ContentStep[] = [
   },
   {
     text: "And you know what?",
-    gif: "https://tenor.com/en-GB/view/shrek-shrek-rizz-rizz-gif-11157824601050747846.gif",
+    gif: "nogif",
     tag: "plot twist incoming",
   },
   {
     text: "I Design too!!",
-    gif: ["/videos/tutor.gif", "/videos/signbridge-gif.gif"],
+    gif: ["gif10", "gif12"],
     badge: "🎨 figma native",
   },
   {
     text: "I have these Designer Eyes",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExODF3YmlocWtzNHI2ZW9hdWptb2YyemU0dThnazZmcGszdHVmcnQ4OSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RILsqUte1MME7TzQJ9/giphy.gif",
+    gif: "gif4",
     tag: "4px detector",
   },
   {
     text: "It's a blessing and a curse, honestly",
-    gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGlxMjhmbnh6NGdnOGd3dGprbnJla3IyeG55c3Z0YWZ6MGc3dTEzdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2rqEdFfkMzXmo/giphy.gif",
+    gif: "gif7",
     badge: "🤌 pixel perfect",
   },
   {
     text: "It refuses to let me build anything static.",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzZlaXVyM2tkamM4aXBlYmY1NGZrZHVsc2FzY3JkN3FleGlxYnExZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/wggy65RuNuVmNvwh5V/giphy.gif",
+    gif: "gif8",
     tag: "no boring UIs",
   },
   {
     text: "I see the 4px misalignment no one else notices.",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2dma2ZuenBweml3dnp1MGl3Z3QzMmZnejJ2Y3BjbWlhdDNxZHIxeiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif",
+    gif: "gif6",
     badge: "🔍 OCD level: max",
   },
   {
     text: "I obsess over how a button feels on hover.",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif",
+    gif: "gif11",
     tag: "micro-interactions",
   },
   {
     text: "I don't just make it work. I make it an experience.",
-    gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHozbzI4d2hrYzQ1bXV5b25oMXF1dGlmcXFnbGs3OWxyNnUzYnR4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ffzhLUixCtlsc/giphy.gif",
+    gif: "gif13",
     badge: "✨ craft > output",
   },
   {
     text: "So... what exactly am I?",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdncxZzByaDJmZ2twYjBuZ3dtZG00aXM2MXZtbmtyaTg1M2VsbXB4ciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ueSNnJrKvsb5rK26kg/giphy.gif",
+    gif: "gif14",
     tag: "great question",
   },
   {
     text: "A Developer?",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdncxZzByaDJmZ2twYjBuZ3dtZG00aXM2MXZtbmtyaTg1M2VsbXB4ciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/TSuR7EyTAL71dz5Tsv/giphy.gif",
+    gif: "gif14",
     badge: "maybe...",
   },
   {
     text: "A Designer?",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdncxZzByaDJmZ2twYjBuZ3dtZG00aXM2MXZtbmtyaTg1M2VsbXB4ciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ueSNnJrKvsb5rK26kg/giphy.gif",
+    gif: "gif14",
     tag: "also maybe...",
   },
   {
     text: "Actually — it's the best of both worlds.",
-    gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjNwdGkzMnV5ejl0bjQwOTM2ZWRhZXp4cnhmbTFidHp0eDNnNjV0diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pHb82xtBPfqEg/giphy.gif",
+    gif: "gif1",
     badge: "🌍 confirmed.",
   },
 ];
@@ -305,8 +303,11 @@ const DraggableCard = memo(function DraggableCard({
 
     const updateRotation = () => {
       if (!rectCache) return;
-      const dx = (mouseX - rectCache.left - rectCache.width / 2) / (rectCache.width / 2);
-      const dy = (mouseY - rectCache.top - rectCache.height / 2) / (rectCache.height / 2);
+      const dx =
+        (mouseX - rectCache.left - rectCache.width / 2) / (rectCache.width / 2);
+      const dy =
+        (mouseY - rectCache.top - rectCache.height / 2) /
+        (rectCache.height / 2);
       gsap.to(el, {
         rotateX: -dy * 13,
         rotateY: dx * 13,
@@ -613,6 +614,8 @@ function CardColumn({ side }: { side: "left" | "right" }) {
   );
 }
 
+
+
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -659,52 +662,52 @@ export default function Hero() {
       sy: number;
       c: [number, number, number];
     }> = [
-        {
-          cx: 0.18,
-          cy: 0.22,
-          rx: 0.55,
-          ry: 0.45,
-          sx: 0.00018,
-          sy: 0.00013,
-          c: [88, 28, 135],
-        },
-        {
-          cx: 0.75,
-          cy: 0.68,
-          rx: 0.5,
-          ry: 0.4,
-          sx: 0.00015,
-          sy: 0.0002,
-          c: [15, 50, 120],
-        },
-        {
-          cx: 0.5,
-          cy: 0.5,
-          rx: 0.4,
-          ry: 0.35,
-          sx: 0.0001,
-          sy: 0.00015,
-          c: [5, 60, 40],
-        },
-        {
-          cx: 0.85,
-          cy: 0.18,
-          rx: 0.35,
-          ry: 0.3,
-          sx: 0.00022,
-          sy: 0.00011,
-          c: [60, 30, 10],
-        },
-        {
-          cx: 0.12,
-          cy: 0.8,
-          rx: 0.38,
-          ry: 0.32,
-          sx: 0.00013,
-          sy: 0.00018,
-          c: [20, 5, 60],
-        },
-      ];
+      {
+        cx: 0.18,
+        cy: 0.22,
+        rx: 0.55,
+        ry: 0.45,
+        sx: 0.00018,
+        sy: 0.00013,
+        c: [88, 28, 135],
+      },
+      {
+        cx: 0.75,
+        cy: 0.68,
+        rx: 0.5,
+        ry: 0.4,
+        sx: 0.00015,
+        sy: 0.0002,
+        c: [15, 50, 120],
+      },
+      {
+        cx: 0.5,
+        cy: 0.5,
+        rx: 0.4,
+        ry: 0.35,
+        sx: 0.0001,
+        sy: 0.00015,
+        c: [5, 60, 40],
+      },
+      {
+        cx: 0.85,
+        cy: 0.18,
+        rx: 0.35,
+        ry: 0.3,
+        sx: 0.00022,
+        sy: 0.00011,
+        c: [60, 30, 10],
+      },
+      {
+        cx: 0.12,
+        cy: 0.8,
+        rx: 0.38,
+        ry: 0.32,
+        sx: 0.00013,
+        sy: 0.00018,
+        c: [20, 5, 60],
+      },
+    ];
 
     const draw = () => {
       if (!isVisible) {
@@ -1176,35 +1179,42 @@ export default function Hero() {
                   className="flex justify-center"
                   style={{ gap: "clamp(8px,0.9vw,18px)" }}>
                   {(Array.isArray(item.gif) ? item.gif : [item.gif]).map(
-                    (src, idx) => (
-                      <div
-                        key={idx}
-                        className="relative rounded-2xl overflow-hidden"
-                        style={{
-                          width: "clamp(130px,16vw,340px)",
-                          height: "clamp(80px,10vw,210px)",
-                          border: "1px solid rgba(255,255,255,0.09)",
-                          boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
-                          flexShrink: 0,
-                        }}>
-                        <Image
-                          src={src}
-                          alt="showcase"
-                          fill
-                          unoptimized
-                          className="object-cover"
-                        />
+                    (key, idx) => {
+                      const resolvedSrc = gifs[key];
+                      return (
                         <div
+                          key={idx}
+                          className="relative rounded-2xl overflow-hidden"
                           style={{
-                            position: "absolute",
-                            inset: 0,
-                            background:
-                              "linear-gradient(135deg,rgba(0,0,0,0.12) 0%,transparent 50%)",
-                            pointerEvents: "none",
-                          }}
-                        />
-                      </div>
-                    ),
+                            width: "clamp(130px,16vw,340px)",
+                            height: "clamp(80px,10vw,210px)",
+                            border: "1px solid rgba(255,255,255,0.09)",
+                            boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
+                            flexShrink: 0,
+                          }}>
+                          {resolvedSrc.endsWith(".mp4") ? (
+                            <VideoWithFallback src={resolvedSrc} opacity={100} />
+                          ) : (
+                            <Image
+                              src={resolvedSrc}
+                              alt="showcase"
+                              fill
+                              unoptimized
+                              className="object-cover"
+                            />
+                          )}
+                          <div
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              background:
+                                "linear-gradient(135deg,rgba(0,0,0,0.12) 0%,transparent 50%)",
+                              pointerEvents: "none",
+                            }}
+                          />
+                        </div>
+                      );
+                    },
                   )}
                 </div>
               )}

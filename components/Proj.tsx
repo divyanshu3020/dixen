@@ -2,11 +2,10 @@
 
 import { useLayoutEffect, useRef, useEffect } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { MeteoconsStarFill } from "@/common/Iconset";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gifs } from "@/utils/mediaProvider";
+import VideoWithFallback from "@/utils/videoWithFallback";
 
 const projects = [
   {
@@ -15,7 +14,7 @@ const projects = [
     description:
       "A Simple. Minimalist design, fast and light-weight webapp in which you can set mood and persona and it will help you resolve your queries",
     tags: ["React", "Express", "Gemini API", "Tailwind"],
-    image: "/videos/izara.gif",
+    image: gifs.gif5,
     color: "#00ff87",
     number: "01",
     link: "https://github.com/divyanshu3020/IZARA-AI",
@@ -28,7 +27,7 @@ const projects = [
       "A simple decentralized banking application built using Motoko and deployed on the DFINITY Internet Computer.",
     tags: ["Motoko", "DFINITY Internet Computer", "DFX", "React", "Javascript"],
     image: "/images/dapp.png",
-    color: " #bf00ff",
+    color: "#bf00ff",
     number: "02",
     link: "https://github.com/divyanshu3020/Web3-blockchain-banking-DApp",
   },
@@ -38,7 +37,7 @@ const projects = [
     description:
       "Designed Real-time sign language detection web app conducted research on how sign language works. Bridges communication between deaf and hearing communities.",
     tags: ["Figma", "UX Research", "Documentation", "UI Design"],
-    image: "/videos/signbridge-gif.gif",
+    image: gifs.gif10,
     color: "#ff6b00",
     number: "03",
     link: "https://www.figma.com/design/a6VCNhB0LH8250bUB2XQvI/SHOWCASE?node-id=0-1&t=zZbVTAKwuRvHSwxl-1",
@@ -49,7 +48,7 @@ const projects = [
     description:
       "Designed the entire platform for connecting students to nearby tutors, from sign-in/sign-up flow to tutor profile, covered everything",
     tags: ["Figma", "UX Research", "UI Design", "Prototyping", "Documentation"],
-    image: "/videos/tutor.gif",
+    image: gifs.gif12,
     color: "#00cfff",
     number: "04",
     link: "https://www.figma.com/design/a6VCNhB0LH8250bUB2XQvI/SHOWCASE?node-id=0-1&t=zZbVTAKwuRvHSwxl-1",
@@ -61,7 +60,7 @@ const projects = [
     description:
       "Designed and Developed a 'Elegent & Minimal' landing page for a real estate wesbite as per client requirements",
     tags: ["React", "Tailwind", "Javascript"],
-    image: "/videos/easytolive.gif",
+    image: gifs.gif3,
     // color: " #bf00ff",
     color: "#FFD700",
     number: "05",
@@ -322,22 +321,34 @@ export default function Projects() {
                 border: `1px solid ${project.color}22`,
                 background: "#060606",
                 minHeight: "400px",
-              }}
-            >
+              }}>
               {/* Image bg */}
               <div className="absolute inset-0 z-0">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  style={{ opacity: 0.3 }}
+                {typeof project.image === "string" &&
+                project.image.endsWith(".mp4") ? (
+                  <VideoWithFallback src={project.image} opacity={50} />
+                ) : (
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    style={{ opacity: 0.35 }}
+                  />
+                )}
+
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(105deg, rgba(6,6,6,0.97) 0%, rgba(6,6,6,0.82) 35%, rgba(6,6,6,0.3) 65%, rgba(6,6,6,0.15) 100%)`,
+                  }}
                 />
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(180deg, rgba(6,6,6,0.5) 0%, rgba(6,6,6,0.92) 60%, rgba(6,6,6,0.98) 100%)`,
+                    background: `${project.color}12`,
+                    mixBlendMode: "color",
                   }}
                 />
               </div>
@@ -355,27 +366,30 @@ export default function Projects() {
                     />
                     <span
                       className="text-[10px] tracking-[0.3em] uppercase font-medium"
-                      style={{ color: `${project.color}cc` }}
-                    >
+                      style={{ color: `${project.color}cc` }}>
                       {project.subtitle}
                     </span>
                   </div>
                   <span
                     className="font-docallisme leading-none select-none"
-                    style={{ fontSize: "clamp(36px,9vw,72px)", color: `${project.color}18` }}
-                  >
+                    style={{
+                      fontSize: "clamp(36px,9vw,72px)",
+                      color: `${project.color}18`,
+                    }}>
                     {project.number}
                   </span>
                 </div>
                 {/* Title */}
                 <h2
                   className="font-docallisme text-white"
-                  style={{ fontSize: "clamp(28px,6vw,48px)", lineHeight: 0.95 }}
-                >
+                  style={{
+                    fontSize: "clamp(28px,6vw,48px)",
+                    lineHeight: 0.95,
+                  }}>
                   {project.title}
                 </h2>
                 {/* Description */}
-                <p className="text-white/40 text-xs leading-relaxed">
+                <p className="text-white/80 text-xs leading-relaxed">
                   {project.description}
                 </p>
                 {/* Tags */}
@@ -388,8 +402,7 @@ export default function Projects() {
                         border: `1px solid ${project.color}2a`,
                         color: `${project.color}88`,
                         background: `${project.color}0d`,
-                      }}
-                    >
+                      }}>
                       {tag}
                     </span>
                   ))}
@@ -397,8 +410,7 @@ export default function Projects() {
                 {/* Tap hint */}
                 <p
                   className="text-[9px] tracking-[0.25em] uppercase mt-1"
-                  style={{ color: `${project.color}55` }}
-                >
+                  style={{ color: `${project.color}55` }}>
                   tap to view →
                 </p>
               </div>
@@ -465,7 +477,6 @@ export default function Projects() {
 
           {/* Scroll hint */}
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 text-white/20 text-[10px] tracking-[0.3em] uppercase select-none">
-
             scroll down to explore
             <svg
               width="14"

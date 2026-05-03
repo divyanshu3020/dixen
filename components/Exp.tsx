@@ -1,12 +1,9 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import GlowCard from "./GlowCard";
 import { MeteoconsStarFill } from "@/common/Iconset";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
   {

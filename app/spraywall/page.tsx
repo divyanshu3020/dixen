@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 import Link from "next/link";
 import type { SprayWall } from "@/types/database";
 
