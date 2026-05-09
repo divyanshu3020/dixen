@@ -628,6 +628,11 @@ export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const peekRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -891,8 +896,12 @@ export default function Hero() {
           />
         </div>
 
-        <CardColumn side="left" />
-        <CardColumn side="right" />
+        {isMounted && (
+          <>
+            <CardColumn side="left" />
+            <CardColumn side="right" />
+          </>
+        )}
 
         <div style={{ position: "relative", zIndex: 100 }}>
           <Navbar nameSlotRef={navNameRef} imageSlotRef={navImageRef} />
@@ -1046,6 +1055,7 @@ export default function Hero() {
               fill
               priority
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, 300px"
               style={{ borderRadius: "clamp(14px,1.2vw,22px)" }}
               draggable={false}
             />

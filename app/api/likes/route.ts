@@ -1,26 +1,35 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import type { PortfolioStats } from "@/types/database";
+import { redis } from "@/lib/redis";
+import { getOrSetCache } from "@/utils/cache";
+import Logger from "@/utils/logger";
+
+const log = Logger.create("API:LIKES");
+const CACHE_KEY = "portfolio:likes";
 
 export async function GET() {
+  log.info("GET request received");
   try {
-    const { data, error } = await supabase
-      .from("portfolio_stats")
-      .select("likes")
-      .single();
+    const fetchFromDB = async () => {
+      log.info("Fetching likes from Supabase...");
+      const { data, error } = await supabase
+        .from("portfolio_stats")
+        .select("likes")
+        .single();
 
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching likes:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch likes" },
-        { status: 500 },
-      );
-    }
+      if (error && error.code !== "PGRST116") {
+        log.error("Supabase error fetching likes:", error);
+        throw error;
+      }
+      log.info(`Successfully fetched likes from Supabase: ${data?.likes ?? 0}`);
+      return data?.likes ?? 0;
+    };
 
-    const likes = data?.likes ?? 0;
+    const likes = await getOrSetCache(CACHE_KEY, fetchFromDB, 3600);
     return NextResponse.json({ likes });
   } catch (err) {
-    console.error("Unexpected error:", err);
+    console.error("Unexpected error in GET /api/likes:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -29,80 +38,50 @@ export async function GET() {
 }
 
 export async function POST() {
+  log.info("POST request received");
   try {
-    // Try to upsert: increment if exists, insert if not
-    // Use raw SQL for atomic increment (single query, no race conditions)
+    // 1. Atomically increment in Redis for instant feedback
+    const newLikes = await redis.incr(CACHE_KEY);
+    log.info(`Redis incremented. New value: ${newLikes}`);
+
+    // 2. Update Supabase in background (or concurrently)
+    log.info("Syncing likes to Supabase...");
     const { data, error } = await supabase.rpc("increment_likes");
 
     if (error) {
       if (error.code !== "PGRST202") {
-        console.error("Error incrementing likes:", error);
+        log.error("Error incrementing likes in Supabase RPC:", error);
       }
-      // Fallback to read-then-update for compatibility
-      const { data: existing, error: fetchError } = await supabase
+      log.info("Falling back to manual Supabase update...");
+      // Fallback: update Supabase manually if RPC fails
+      const { data: existing } = await supabase
         .from("portfolio_stats")
         .select("likes, id")
         .single();
-
-      if (fetchError && fetchError.code !== "PGRST116") {
-        return NextResponse.json(
-          { error: "Failed to increment likes" },
-          { status: 500 },
-        );
-      }
-
-      const newLikes = (existing?.likes ?? 0) + 1;
+      
       const statsId = existing?.id;
-
       if (statsId) {
-        const { data: updated, error: updateError } = await supabase
+        log.info(`Updating existing record ${statsId}...`);
+        await supabase
           .from("portfolio_stats")
           .update({ likes: newLikes })
-          .eq("id", statsId)
-          .select()
-          .single();
-
-        if (updateError) {
-          return NextResponse.json(
-            { error: "Failed to increment likes" },
-            { status: 500 },
-          );
-        }
-
-        return NextResponse.json(
-          { likes: (updated as PortfolioStats).likes },
-          { status: 200 },
-        );
+          .eq("id", statsId);
       } else {
-        const { data: inserted, error: insertError } = await supabase
+        log.info("Inserting new stats record...");
+        await supabase
           .from("portfolio_stats")
-          .insert([{ likes: 1 }])
-          .select()
-          .single();
-
-        if (insertError) {
-          return NextResponse.json(
-            { error: "Failed to increment likes" },
-            { status: 500 },
-          );
-        }
-
-        return NextResponse.json(
-          { likes: (inserted as PortfolioStats).likes },
-          { status: 201 },
-        );
+          .insert([{ likes: newLikes }]);
       }
+    } else {
+      log.info("Supabase RPC sync successful");
     }
 
-    // If rpc returned a primitive (number), use it. If it returned an object, use data.likes.
-    const likesValue = typeof data === "object" && data !== null ? data.likes : data;
-    
     return NextResponse.json(
-      { likes: likesValue ?? 0 },
+      { likes: newLikes },
       { status: 200 },
     );
   } catch (err) {
-    console.error("Unexpected error:", err);
+    log.error("Unexpected error in POST /api/likes:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

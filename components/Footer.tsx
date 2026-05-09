@@ -258,7 +258,9 @@ function StatCounter({
           const step = Math.max(1, Math.ceil(end / 60));
           const id = setInterval(() => {
             v = Math.min(v + step, end);
-            if (spanRef.current) spanRef.current.innerText = v.toString();
+            if (spanRef.current) {
+              spanRef.current.textContent = v.toString() + suffix;
+            }
             if (v >= end) clearInterval(id);
           }, 16);
         }
@@ -273,7 +275,7 @@ function StatCounter({
     <div ref={ref} className="flex flex-col items-center gap-1.5">
       <span
         ref={spanRef}
-        className="font-serif text-white leading-none"
+        className="font-sans font-bold text-white leading-none"
         style={{ fontSize: "clamp(30px,4vw,56px)" }}>
         0{suffix}
       </span>
@@ -1001,6 +1003,7 @@ export default function Footer() {
                 {([8, 18, 32] as const).map((s) => (
                   <button
                     key={s}
+                    suppressHydrationWarning={true}
                     onClick={() => setBrushSize(s)}
                     className="rounded-full flex items-center justify-center transition-all duration-200"
                     style={{
@@ -1031,6 +1034,7 @@ export default function Footer() {
                 {hasTagged && (
                   <button
                     onClick={clearCanvas}
+                    suppressHydrationWarning={true}
                     className="px-4 py-2 rounded-xl text-xs transition-all duration-200"
                     style={{
                       color: "rgba(255,255,255,0.3)",
@@ -1055,6 +1059,7 @@ export default function Footer() {
             {SPRAY_COLORS.map((c) => (
               <button
                 key={c}
+                suppressHydrationWarning={true}
                 onClick={() => setActiveColor(c)}
                 className="rounded-full transition-all duration-200"
                 style={{
@@ -1118,6 +1123,7 @@ export default function Footer() {
           <div className="flex items-center justify-center gap-4 mt-6 mb-4">
             <button
               onClick={saveSnapshot}
+              suppressHydrationWarning={true}
               className="w-full sm:w-auto px-6 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
               style={{
                 color: "#000",
@@ -1196,6 +1202,7 @@ export default function Footer() {
                 <button
                   ref={likeRef}
                   onClick={handleLike}
+                  suppressHydrationWarning={true}
                   className="relative flex flex-col items-center gap-1.5 px-6 py-4 rounded-2xl transition-all duration-300"
                   style={{
                     background: liked
@@ -1214,11 +1221,11 @@ export default function Footer() {
                     ❤️
                   </span>
                   <span
-                    className="font-docallisme text-2xl leading-none"
+                    className="font-sans font-bold text-2xl leading-none"
                     style={{
                       color: liked ? "#ff5050" : "rgba(255,255,255,0.3)",
                     }}>
-                    {likeCount}
+                    {isMounted ? likeCount : "0"}
                   </span>
                   <span className="text-white/20 text-[9px] tracking-widest uppercase">
                     {liked ? "thank you!" : "tap to like"}
@@ -1255,6 +1262,7 @@ export default function Footer() {
                       <button
                         key={i}
                         onClick={() => handleVibe(i)}
+                        suppressHydrationWarning={true}
                         disabled={selectedVibe !== null}
                         className="relative flex items-center gap-1.5 px-3 py-2 sm:py-1 rounded-full overflow-hidden transition-all duration-300 text-[11px]"
                         style={{
@@ -1333,6 +1341,7 @@ export default function Footer() {
                       <input
                         type="text"
                         value={name}
+                        suppressHydrationWarning={true}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="@yourname eg: Enshu, etc"
                         className="w-full outline-none rounded-xl px-4 py-3 text-sm transition-all duration-200"
@@ -1354,6 +1363,7 @@ export default function Footer() {
                       </label>
                       <textarea
                         value={msg}
+                        suppressHydrationWarning={true}
                         onChange={(e) => setMsg(e.target.value)}
                         placeholder="say whatever's on your mind..."
                         rows={4}
@@ -1372,6 +1382,7 @@ export default function Footer() {
                     {/* submit */}
                     <button
                       onClick={handleSubmit}
+                      suppressHydrationWarning={true}
                       disabled={!name.trim() || !msg.trim()}
                       className="flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-semibold transition-all duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
                       style={{
@@ -1485,6 +1496,7 @@ export default function Footer() {
             </p>
             <button
               onClick={() => handleCopy("divyanshus068@gmail.com", "email")}
+              suppressHydrationWarning={true}
               className="group flex items-start gap-4 text-left transition-all duration-200 hover:translate-x-1">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
@@ -1518,6 +1530,7 @@ export default function Footer() {
             </button>
             <button
               onClick={() => handleCopy("+91 7617639230", "phone")}
+              suppressHydrationWarning={true}
               className="group flex items-start gap-4 text-left transition-all duration-200 hover:translate-x-1">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"

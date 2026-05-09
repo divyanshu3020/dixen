@@ -157,7 +157,7 @@ export default function SprayWallGallery() {
                 
                 <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                   <p className="text-white/50 text-[10px] tracking-widest uppercase font-medium">
-                    {new Date(snap.created_at).toLocaleDateString(undefined, {
+                    {new Date(snap.created_at).toLocaleDateString("en-US", {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric'
