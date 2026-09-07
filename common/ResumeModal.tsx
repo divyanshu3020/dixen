@@ -23,7 +23,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
       ) || window.innerWidth < 768;
     setIsMobile(mobile);
 
-    const pdfPath = "/CV-2026-amil.pdf";
+    const pdfPath = "/sept_2026_cv.pdf";
     if (mobile) {
       // Google Docs viewer renders PDFs inline on mobile browsers
       const fullUrl = `${window.location.origin}${pdfPath}`;
